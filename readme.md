@@ -1,1 +1,1 @@
-"SAE de dev Andres Kpognon Clement Ferlicot-Seo" 
+SAE de dev Andres Kpognon Clement Ferlicot-Seo
