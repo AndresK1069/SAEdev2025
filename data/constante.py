@@ -1,1 +1,7 @@
-print("Hello World!!!")
+NCASES = 15
+NFLEURS = 4
+NECTAR_INITIAL = 10
+MAX_NECTAR = 50
+TIME_OUT = 250
+COUT_PONTE = 5
+TIME_KO = 5
