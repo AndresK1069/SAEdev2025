@@ -1,4 +1,7 @@
+
+
 class Player:
-    def __init__(self, playerNectar : int):
-        self.playerNectar = playerNectar
-        pass
+    def __init__(self,playerNectarInitial: int , playerMaxNectar : int):
+        self.playerNectarInitial = playerNectarInitial
+        self.playerMaxNectar = playerMaxNectar
+
