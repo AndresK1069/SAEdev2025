@@ -53,19 +53,28 @@ class GridManager():
                     continue
 
                 if r != 0 and c != 0 and c != rows - 1:
-                    if chunk - 1 < c < cols - chunk and r < middle_line:
+                    if chunk - 1 < c < cols - chunk and r < middle_line and c < middle_line:
                         possible_cells.append((r, c))
-                    if chunk < r < middle_line:
+                    if chunk < r < middle_line and c < middle_line:
                         possible_cells.append((r, c))
 
-        for _ in range(numberFlower):
+
+        if numberFlower %2 != 0:
+            raise Exception('numberFlower should be a multiple of 2')
+
+        for _ in range(numberFlower //2):
             i = randint(0, len(possible_cells)-1)
             flower_row , flower_col = possible_cells.pop(i)
             self.data[flower_row][flower_col] = flower
 
             mirrored_row = 2 * middle_line - flower_row
             self.data[mirrored_row][flower_col] = flower
-            print(middle_line-flower_row)
+            mirrored_col = 2 * middle_line - flower_col
+            self.data[flower_row][mirrored_col] = flower
+            self.data[mirrored_row][mirrored_col] = flower
+
+            r
+            #print(middle_line-flower_row)
 
 
         return self.data
