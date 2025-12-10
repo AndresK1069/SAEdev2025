@@ -18,6 +18,8 @@ class GridManager():
         rows = len(self.data)
         cols = len(self.data[0])
 
+        coord_hive = []
+
         for r in range(rows):
             for c in range(cols):
 
@@ -28,14 +30,18 @@ class GridManager():
                 # add the hives on the map
                 if r == 1 and c == 1:
                     self.data[r][c] = player1_hive
+                    coord_hive.append((r,c))
                 if r == 1 and c == cols - 2:
                     self.data[r][c] = player2_hive
+                    coord_hive.append((r, c))
                 if r == rows-2 and c == 1:
                     self.data[r][c] = player3_hive
+                    coord_hive.append((r, c))
                 if r == rows-2 and c == cols - 2:
                     self.data[r][c] = player4_hive
+                    coord_hive.append((r, c))
 
-        return self.data
+        return self.data , coord_hive
 
     def spawnFlower(self, flower: Flower, numberFlower: int) -> list[list]:
         rows = len(self.data)
@@ -73,7 +79,6 @@ class GridManager():
             self.data[flower_row][mirrored_col] = flower
             self.data[mirrored_row][mirrored_col] = flower
 
-            r
             #print(middle_line-flower_row)
 
 

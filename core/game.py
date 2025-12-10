@@ -21,17 +21,29 @@ p2 = Player(NECTAR_INITIAL,MAX_NECTAR)
 p3 = Player(NECTAR_INITIAL,MAX_NECTAR)
 p4 = Player(NECTAR_INITIAL,MAX_NECTAR)
 
+PLAYERS = [p1,p2,p3,p4]
+
+H1 = Hive("h1",p1 ,[])
+H2 = Hive("h2",p2,[])
+H3 = Hive("h3",p3,[])
+H4 = Hive("h4",p3,[])
+
+HIVES = [H1,H2,H3,H4]
+
 F = Flower("f")
-H1 = Hive("h1",p1)
-H2 = Hive("h2",p2)
-H3 = Hive("h3",p3)
-H4 = Hive("h4",p3)
 
 gm = GridManager(NCASES)
-gm.addObject(W, H1, H2, H3, H4)
+tmp, hive_coords = gm.addObject(W, H1, H2, H3, H4)
+print(hive_coords)
 gm.spawnFlower(F,NFLEURS)
 gm.render()
 
 while TIME_OUT > 0:
-    TIME_OUT -= 1
-    pass
+
+    #Spawing Prototype
+
+    for i in range(len(HIVES)):
+        HIVES[i].spawnBee(gm.data , hive_coords[i],"Bourdon" )
+    #TODO change this when logic working
+    break
+

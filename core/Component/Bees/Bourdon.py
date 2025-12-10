@@ -1,5 +1,12 @@
 from core.Component.Bee import Bee
 
 class Bourdon(Bee):
-    super().__init__()
-    pass
+    def __init__(self):
+        beeHealth = 5
+        maxNectar = 3
+        beeAgility = 0
+        beeStrength = 5
+        displayObject = "B"
+        simpleMovement = True
+
+        super().__init__(beeHealth,maxNectar, beeAgility, beeStrength, displayObject, simpleMovement)
