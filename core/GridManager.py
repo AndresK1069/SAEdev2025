@@ -2,6 +2,7 @@ from core.Component.Wall import Wall
 from core.Component.Hive import Hive
 from core.Component.Flower import Flower
 from random import randint
+import copy
 
 
 class GridManager():
@@ -83,6 +84,11 @@ class GridManager():
 
 
         return self.data
+
+    def cellToList(self, row: int, col: int) -> list:
+        varObject = self.data[row][col]
+        return [copy.copy(varObject)]
+
 
 
     def render(self):
