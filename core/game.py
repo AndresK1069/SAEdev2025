@@ -43,12 +43,15 @@ while TIME_OUT > 0:
     for i in range(len(HIVES)):
 
 
-        # Spawing Prototype
+        # Spawing Prototype (Working)
+
         row , col = hive_coords[i]
         gm.data[row][col] = gm.cellToList(row, col)
-        gm.data[row][col].append("elfefk")
+        bee_ = HIVES[i].spawnBee("Bourdon")
+        gm.data[row][col].append(bee_)
+        print(HIVES[i].beeList)
         print(gm.data[row][col])
-        HIVES[i].spawnBee(gm.data , hive_coords[i],"Bourdon" )
+
 
 
     #TODO change this when logic working

@@ -7,13 +7,13 @@ class Hive(object):
         self.owner = owner
         self.beeList = beeList
 
-    def spawnBee(self ,grid :list[list[None]] , coord:list , beeType: str):
+    def spawnBee(self, beeType: str):
         beeType_ = beeType.lower()
         if beeType_ not in BEE_TYPES:
             raise ValueError("Invalid beeType")
 
-        row, col = coord
-        print(row, col)
-        #check surrounding cell to check if cell is pawning is possible
+        bee_class = BEE_TYPES[beeType_]
+        bee = bee_class()
+        self.beeList.append(bee)
+        return bee
 
-        pass
