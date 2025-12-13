@@ -95,6 +95,12 @@ class GridManager():
         for row in self.data:
             line = ""
             for cell in row:
+
+                #Change with render priority system
+                if isinstance(cell,list):
+                    line += "L "
+                    continue
+
                 if cell is None:
                     line += ". "
                 else:
