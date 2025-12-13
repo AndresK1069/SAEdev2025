@@ -149,7 +149,7 @@ class GridManager():
 
         return self.data
 
-    #TODO add When not from list movement
+    #TODO add movement When not from list movement
 
 
 
