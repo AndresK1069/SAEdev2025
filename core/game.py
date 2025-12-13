@@ -69,7 +69,7 @@ while TIME_OUT > 0:
             DummyObjectbeeData = bee_class()
 
             #check if player have enough nectar and if yes  spawn bee
-            if HIVES[i].owner.playerNectarInitial > DummyObjectbeeData.maxNectar:
+            if HIVES[i].owner.playerNectarInitial >= DummyObjectbeeData.maxNectar:
 
                 HIVES[i].owner.playerNectarInitial -= DummyObjectbeeData.maxNectar
                 print(HIVES[i].owner.playerNectarInitial)

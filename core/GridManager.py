@@ -146,7 +146,10 @@ class GridManager():
 
                                     self.data[r][c].remove(bee)
 
+
         return self.data
+
+    #TODO add When not from list movement
 
 
 
