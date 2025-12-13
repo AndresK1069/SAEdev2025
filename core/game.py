@@ -18,17 +18,22 @@ G =Wall("G")
 
 empty_b = []
 
-p1 = Player(NECTAR_INITIAL,MAX_NECTAR)
-p2 = Player(NECTAR_INITIAL,MAX_NECTAR)
-p3 = Player(NECTAR_INITIAL,MAX_NECTAR)
-p4 = Player(NECTAR_INITIAL,MAX_NECTAR)
+inputP1 = input("Nom du Joueur 1:")
+inputP2 = input("Nom du Joueur 2:")
+inputP3 = input("Nom du Joueur 3:")
+inputP4 = input("Nom du Joueur 4:")
+
+p1 = Player(NECTAR_INITIAL,inputP1)
+p2 = Player(NECTAR_INITIAL,inputP2)
+p3 = Player(NECTAR_INITIAL,inputP3)
+p4 = Player(NECTAR_INITIAL,inputP4)
 
 PLAYERS = [p1,p2,p3,p4]
 
 H1 = Hive("h1",p1 ,[])
 H2 = Hive("h2",p2,[])
 H3 = Hive("h3",p3,[])
-H4 = Hive("h4",p3,[])
+H4 = Hive("h4",p4,[])
 
 HIVES = [H1,H2,H3,H4]
 
@@ -41,9 +46,9 @@ gm.spawnFlower(F,NFLEURS)
 gm.render()
 
 while TIME_OUT > 0:
-
     for i in range(len(HIVES)):
-
+        print(f"Player :{HIVES[i].owner.playerName}")
+        print(f"nectar actuelle :{HIVES[i].owner.playerNectarInitial}")
         print("faite un choix")
         print(" 1. Pondre")
         print(" 2. Bouger un abielle")
@@ -52,6 +57,7 @@ while TIME_OUT > 0:
         if choice == "1":
 
             # Spawing Prototype (Working)
+
             print(f"nectar actuelle :{HIVES[i].owner.playerNectarInitial}")
 
             beePlayerInput = input("Pondre une abeille : ")

@@ -1,7 +1,7 @@
 
 
 class Player:
-    def __init__(self,playerNectarInitial: int , playerMaxNectar : int):
+    def __init__(self,playerNectarInitial: int , playerName:str):
         self.playerNectarInitial = playerNectarInitial
-        self.playerMaxNectar = playerMaxNectar
+        self.playerName = playerName
 
