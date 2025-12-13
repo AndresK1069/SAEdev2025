@@ -30,14 +30,14 @@ p4 = Player(NECTAR_INITIAL,inputP4)
 
 PLAYERS = [p1,p2,p3,p4]
 
-H1 = Hive("h1",p1 ,[])
-H2 = Hive("h2",p2,[])
-H3 = Hive("h3",p3,[])
-H4 = Hive("h4",p4,[])
+H1 = Hive("h1",p1 ,[],MAX_NECTAR,0)
+H2 = Hive("h2",p2,[],MAX_NECTAR,0)
+H3 = Hive("h3",p3,[],MAX_NECTAR,0)
+H4 = Hive("h4",p4,[],MAX_NECTAR,0)
 
 HIVES = [H1,H2,H3,H4]
 
-F = Flower("f")
+F = Flower("f", NECTAR_INITIAL)
 
 gm = GridManager(NCASES)
 tmp, hive_coords = gm.addObject(W, H1, H2, H3, H4)
@@ -69,9 +69,10 @@ while TIME_OUT > 0:
             DummyObjectbeeData = bee_class()
 
             #check if player have enough nectar and if yes  spawn bee
-            if HIVES[i].owner.playerNectarInitial >= DummyObjectbeeData.maxNectar:
+            #TODO change when not enough nectar
+            if HIVES[i].owner.playerNectarInitial >= DummyObjectbeeData.nectarCost:
 
-                HIVES[i].owner.playerNectarInitial -= DummyObjectbeeData.maxNectar
+                HIVES[i].owner.playerNectarInitial -= DummyObjectbeeData.nectarCost
                 print(HIVES[i].owner.playerNectarInitial)
 
                 row , col = hive_coords[i]
@@ -96,11 +97,28 @@ while TIME_OUT > 0:
         else:
             print("can't move")
 
+    winner_array=[]
+    for i in range(HIVES):
+        if HIVES[i].currentNectar == HIVES[i].maxNectar:
+            winner_array.append(HIVES[i].owner.playerName)
+        for bee in HIVES[i].beeList:
+            # Scanner au tour de bee pour check si il y'a du nectar ou escarmouches
+            pass
+
+    # fin de Gagnant
+    if len(winner_array) != 0:
+        if len(winner_array) == 1:
+            print(f"{winner_array[0]} a gagnez !!!")
+        else:
+            for name in winner_array:
+                print(name)
+            print("Sont arriver ex aequo")
+        break
+
     #TODO at the end of every check for fights and flower
 
 
 
 
-    #TODO change this when logic working
     TIME_OUT -= 1
 

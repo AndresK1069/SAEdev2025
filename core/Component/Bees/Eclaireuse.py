@@ -8,5 +8,6 @@ class Eclaireuse(Bee):
         beeStrength = 1
         displayObject = "E"
         simpleMovement = False
-
-        super().__init__(beeHealth, maxNectar, beeAgility, beeStrength, displayObject, simpleMovement)
+        nectarCost = 0
+        currentNectar = 0
+        super().__init__(beeHealth, maxNectar, beeAgility, beeStrength, displayObject, simpleMovement,nectarCost, currentNectar)

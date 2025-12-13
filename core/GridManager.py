@@ -146,12 +146,36 @@ class GridManager():
 
                                     self.data[r][c].remove(bee)
 
+                    #TODO remove this duplicate code
+                    else:
+                        if self.data[r][c] is bee:
+                            if bee.simpleMovement:
+                                if nCol != c and nRow != r:
+                                    raise Exception("Diagonal movement is not allowed")
+
+                                if nRow > r + bee.beeAgility:
+                                    raise Exception('nCol and nRow should be smaller than rows')
+                                if nCol > c + bee.beeAgility:
+                                    raise Exception('nCol and nRow should be smaller than cols')
+
+                                if self.data[nRow][nCol] is None:
+                                    self.data[nRow][nCol] = bee
+
+                                    self.data[r][c] = None
+                                else:
+                                    if not bee.simpleMovement:
+
+                                        if nRow > r + bee.beeAgility:
+                                            raise Exception('nCol and nRow should be smaller than rows')
+                                        if nCol > c + bee.beeAgility:
+                                            raise Exception('nCol and nRow should be smaller than cols')
+
+                                        if self.data[nRow][nCol] is None:
+                                            self.data[nRow][nCol] = bee
+
+                                            self.data[r][c] = None
 
         return self.data
-
-    #TODO add movement When not from list movement
-
-
 
     def render(self)->None:
         for row in self.data:
