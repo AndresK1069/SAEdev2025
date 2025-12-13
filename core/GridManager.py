@@ -89,9 +89,68 @@ class GridManager():
         varObject = self.data[row][col]
         return [copy.copy(varObject)]
 
+    def cleanGrid(self):
+        #Scan the canva and remove list with only the hive inside
+        rows = len(self.data)
+        cols = len(self.data[0])
+
+        for r in range(rows):
+            for c in range(cols):
+                if isinstance(self.data[r][c], list) and len(self.data[r][c]) ==  1:
+                    for hive in self.data[r][c]:
+                        hive_ = hive
+                    self.data[r][c] = hive_
 
 
-    def render(self):
+        return
+
+    def moveObject(self , bee ,nRow :int, nCol :int) -> None:
+        from core.Component.Bee import Bee
+        if isinstance(bee, Bee):
+
+            rows = len(self.data)
+            cols = len(self.data[0])
+
+            if nRow >= rows:
+                raise Exception('nRow should be smaller than rows')
+            if nCol >= cols:
+                raise Exception('nCol should be smaller than cols')
+
+            for r in range(rows):
+                for c in range(cols):
+
+                    if isinstance(self.data[r][c], list) and bee in self.data[r][c]:
+                        if bee.simpleMovement:
+                            if nCol != c and nRow != r:
+                                raise Exception("Diagonal movement is not allowed")
+
+                            if nRow > r + bee.beeAgility :
+                                raise Exception('nCol and nRow should be smaller than rows')
+                            if nCol > c + bee.beeAgility :
+                                raise Exception('nCol and nRow should be smaller than cols')
+
+                            if self.data[nRow][nCol] is None:
+                                self.data[nRow][nCol] = bee
+
+                                self.data[r][c].remove(bee)
+                        else:
+                            if not bee.simpleMovement:
+
+                                if nRow > r + bee.beeAgility:
+                                    raise Exception('nCol and nRow should be smaller than rows')
+                                if nCol > c + bee.beeAgility:
+                                    raise Exception('nCol and nRow should be smaller than cols')
+
+                                if self.data[nRow][nCol] is None:
+                                    self.data[nRow][nCol] = bee
+
+                                    self.data[r][c].remove(bee)
+
+        return self.data
+
+
+
+    def render(self)->None:
         for row in self.data:
             line = ""
             for cell in row:

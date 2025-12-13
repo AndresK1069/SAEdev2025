@@ -80,10 +80,13 @@ while TIME_OUT > 0:
 
         #MOVEMENTE
         if len(HIVES[i].beeList) != 0:
-            print("can move")
+            #print("can move")
             for bee in HIVES[i].beeList:
-                print(bee.displayObject)
-
+                newRow = int(input("Nouvelle ligne :"))
+                newCol = int(input("Nouvelle Column :"))
+                gm.moveObject(bee ,newRow,newCol)
+                gm.cleanGrid()
+                gm.render()
         else:
             print("can't move")
 
@@ -94,5 +97,4 @@ while TIME_OUT > 0:
 
     #TODO change this when logic working
     TIME_OUT -= 1
-    break
 
