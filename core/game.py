@@ -45,6 +45,9 @@ tmp, hive_coords = gm.addObject(W, H1, H2, H3, H4)
 gm.spawnFlower(F,NFLEURS)
 gm.render()
 
+
+
+#TODO complet overhaul turn logic
 while TIME_OUT > 0:
     for i in range(len(HIVES)):
         print(f"Player :{HIVES[i].owner.playerName}")
@@ -70,13 +73,12 @@ while TIME_OUT > 0:
 
             #check if player have enough nectar and if yes  spawn bee
             #TODO change when not enough nectar
-            if HIVES[i].owner.playerNectarInitial >= DummyObjectbeeData.nectarCost:
-
+            row, col = hive_coords[i]
+            gm.data[row][col] = gm.cellToList(row, col)
+            #TODO sync player Nectar with HIve nectar
+            if HIVES[i].owner.playerNectarInitial >= DummyObjectbeeData.nectarCost and len(gm.data[row][col])==1:
                 HIVES[i].owner.playerNectarInitial -= DummyObjectbeeData.nectarCost
                 print(HIVES[i].owner.playerNectarInitial)
-
-                row , col = hive_coords[i]
-                gm.data[row][col] = gm.cellToList(row, col)
                 bee_ = HIVES[i].spawnBee(beePlayerInput)
                 gm.data[row][col].append(bee_)
                 print(HIVES[i].beeList)
@@ -98,14 +100,18 @@ while TIME_OUT > 0:
             print("can't move")
 
     winner_array=[]
-    for i in range(HIVES):
+    for i in range(len(HIVES)):
         if HIVES[i].currentNectar == HIVES[i].maxNectar:
             winner_array.append(HIVES[i].owner.playerName)
-        for bee in HIVES[i].beeList:
-            # Scanner au tour de bee pour check si il y'a du nectar ou escarmouches
-            pass
+
+
+    arr_f = gm.recupFleur()
+    gm.flowerButinage(arr_f)
+
+    gm.emptyBeeNectar()
 
     # fin de Gagnant
+    #TODO RE-work winning condition
     if len(winner_array) != 0:
         if len(winner_array) == 1:
             print(f"{winner_array[0]} a gagnez !!!")

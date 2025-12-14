@@ -105,6 +105,7 @@ class GridManager():
         return
 
     def moveObject(self , bee ,nRow :int, nCol :int) -> None:
+        #TODO bee can't go in adversary camp
         from core.Component.Bee import Bee
         if isinstance(bee, Bee):
 
@@ -176,6 +177,49 @@ class GridManager():
                                             self.data[r][c] = None
 
         return self.data
+
+
+    def recupFleur(self) -> list[(int ,int)]:
+        flower_array = []
+        rows = len(self.data)
+        cols = len(self.data[0])
+
+        for r in range(rows):
+            for c in range(cols):
+                if isinstance(self.data[r][c], Flower):
+                    flower_array.append((r, c))
+        return flower_array
+
+    def flowerButinage(self, arrFlower:list) -> None:
+        from core.Component.Bee import Bee
+        for f in arrFlower:
+            r,c = f
+            row , col = f
+            r-=1
+            c-=1
+            #print(r,c)
+            for col in range(3):
+                for row in range(3):
+                    if isinstance(self.data[r+row][c+col], Bee):
+                        #TODO finish butinage logic
+                        print("BEE IN BUTINAGE AREA")
+
+
+    def emptyBeeNectar(self ,arrayhive:list) -> None:
+        from core.Component.Bee import Bee
+        for f in arrayhive:
+            r, c = f
+            row_, row_ = f
+            r -= 1
+            c -= 1
+            # print(r,c)
+            for col in range(3):
+                for row in range(3):
+                    if isinstance(self.data[r + row][c + col], Bee):
+                        nectarStock = self.data[r + row][c + col].currentNectar
+                        self.data[row_][row_].currentNectar += nectarStock
+                        self.data[r + row][c + col].currentNectar -= nectarStock
+
 
     def render(self)->None:
         for row in self.data:

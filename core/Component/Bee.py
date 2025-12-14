@@ -3,7 +3,8 @@ from core.Player import Player
 from core.Component import Hive
 
 class Bee(object):
-
+    #TODO add bee stun
+    #TODO HAS bee moved last turn
     def __init__(self, beeHealth ,maxNectar : int , beeAgility : int , beeStrength : int , displayObject: str ,simpleMovement :bool , nectarCost:int, currentNectar: int):
         self.beeHealth = beeHealth
         self.maxNectar = maxNectar
