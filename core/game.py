@@ -53,9 +53,6 @@ gm.render()
 while TIME_OUT > 0:
     for i in range(len(HIVES)):
 
-        canSpawn = False
-        canMove = False
-
         print(f"Player :{HIVES[i].owner.playerName}")
         print(f"nectar actuelle :{HIVES[i].currentNectar}")
         print("faite un choix")
