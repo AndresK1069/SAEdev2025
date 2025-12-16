@@ -96,17 +96,21 @@ while TIME_OUT > 0:
         #MOVEMENTE
         if len(HIVES[i].beeList) != 0:
             for bee in HIVES[i].beeList:
-                print(f"voulez vous bouger l'abeille {bee}")
-                print(f"nectar actuelle :{bee.currentNectar}")
-                skip = int(input("entrez un skip : "))
-                if skip == 1:
-                    newRow = int(input("Nouvelle ligne :"))
-                    newCol = int(input("Nouvelle Column :"))
-                    gm.moveObject(bee ,newRow,newCol)
-                    gm.cleanGrid()
-                    gm.render()
+                if not bee.isStun:
+                    print(f"voulez vous bouger l'abeille {bee}")
+                    print(f"nectar actuelle :{bee.currentNectar}")
+                    skip = int(input("entrez un skip : "))
+                    if skip == 1:
+                        newRow = int(input("Nouvelle ligne :"))
+                        newCol = int(input("Nouvelle Column :"))
+                        gm.moveObject(bee ,newRow,newCol)
+                        gm.cleanGrid()
+                        gm.render()
+                    else:
+                        continue
                 else:
-                    continue
+                    bee.stunCounter -= 1
+
         else:
             print("can't move")
 
@@ -124,6 +128,9 @@ while TIME_OUT > 0:
     gm.getBeePos()
     gm.flowerButinage(arr_f)
     gm.emptyBeeNectar(hive_coords)
+
+
+    #TODO ADD damage/escarmouche sys and de stun
 
     #fin de Gagnant
     #TODO RE-work winning condition
