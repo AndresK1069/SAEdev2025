@@ -109,6 +109,7 @@ while TIME_OUT > 0:
                     else:
                         continue
                 else:
+                    print(f"il vous reste {bee.stunCounter} avant de pouvoir bouger")
                     bee.stunCounter -= 1
 
         else:
