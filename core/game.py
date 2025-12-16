@@ -20,10 +20,10 @@ G =Wall("G")
 
 empty_b = []
 
-inputP1 = input("Nom du Joueur 1:")
-inputP2 = input("Nom du Joueur 2:")
-inputP3 = input("Nom du Joueur 3:")
-inputP4 = input("Nom du Joueur 4:")
+inputP1 = "j1"
+inputP2 = "j2"
+inputP3 = "j3"
+inputP4 = "j4"
 
 p1 = Player(inputP1)
 p2 = Player(inputP2)
@@ -124,7 +124,7 @@ while TIME_OUT > 0:
     gm.flowerButinage(arr_f)
     gm.emptyBeeNectar(hive_coords)
 
-    # fin de Gagnant
+    #fin de Gagnant
     #TODO RE-work winning condition
     if len(winner_array) != 0:
         if len(winner_array) == 1:

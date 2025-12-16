@@ -179,9 +179,9 @@ class GridManager():
         from core.Component.Bee import Bee
         for f in arrFlower:
             r,c = f
+            reel_row , reel_col = f
             r-=1
             c-=1
-            #print(r,c)
             for col in range(3):
                 for row in range(3):
                     if isinstance(self.data[r+row][c+col], Bee):
@@ -192,8 +192,8 @@ class GridManager():
                         move1, move2 = self.data[r+row][c+col].moveList[-2:]
                         if move1 == move2:
                             print("START BUTINAGE")
-                            print(self.data[r][c].flowerNectar)
-                            varNectar = self.data[r][c].reduceNectar()
+                            print(self.data[reel_row][reel_col].flowerNectar)
+                            varNectar = self.data[reel_row][reel_col].reduceNectar()
                             self.data[r+row][c+col].currentNectar += varNectar
 
 
