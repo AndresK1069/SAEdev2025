@@ -8,6 +8,7 @@ class Ouvriere(Bee):
         beeStrength = 1
         displayObject = "O"
         simpleMovement = True
-        nectarCost = 0
         currentNectar = 0
-        super().__init__(beeHealth, maxNectar, beeAgility, beeStrength, displayObject, simpleMovement,nectarCost, currentNectar)
+        stunCounter = 0
+        moveList = []
+        super().__init__(beeHealth, maxNectar, beeAgility, beeStrength, displayObject, simpleMovement, currentNectar,stunCounter, moveList)

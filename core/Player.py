@@ -1,7 +1,4 @@
-
-
 class Player:
-    def __init__(self,playerNectarInitial: int , playerName:str):
-        self.playerNectarInitial = playerNectarInitial
+    def __init__(self, playerName:str):
         self.playerName = playerName
 

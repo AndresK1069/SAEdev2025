@@ -104,79 +104,64 @@ class GridManager():
 
         return
 
-    def moveObject(self , bee ,nRow :int, nCol :int) -> None:
-        #TODO bee can't go in adversary camp
+    def is_valid_cell(self, bee, r:int, c:int, nRow:int, nCol:int) -> bool:
+        rows = len(self.data)
+        cols = len(self.data[0])
+
+        if nRow < 0 or nRow >= rows or nCol < 0 or nCol >= cols:
+            raise Exception("Target cell out of bounds")
+
+
+        if self.data[nRow][nCol] is not None:
+            raise Exception("Target cell is not empty")
+
+        row_diff = abs(nRow - r)
+        col_diff = abs(nCol - c)
+
+        if bee.simpleMovement:
+            if row_diff > 0 and col_diff > 0:
+                raise Exception("Diagonal movement is not allowed")
+
+
+            if row_diff > bee.beeAgility or col_diff > bee.beeAgility:
+                raise Exception("Move exceeds agility")
+
+        else:
+            if max(row_diff, col_diff) > bee.beeAgility:
+                raise Exception("Move exceeds agility")
+
+        return True
+
+    def moveObject(self, bee, nRow: int, nCol: int) -> None:
         from core.Component.Bee import Bee
-        if isinstance(bee, Bee):
 
-            rows = len(self.data)
-            cols = len(self.data[0])
+        if not isinstance(bee, Bee):
+            return self.data
 
-            if nRow >= rows:
-                raise Exception('nRow should be smaller than rows')
-            if nCol >= cols:
-                raise Exception('nCol should be smaller than cols')
+        rows = len(self.data)
+        cols = len(self.data[0])
 
-            for r in range(rows):
-                for c in range(cols):
+        for r in range(rows):
+            for c in range(cols):
 
-                    if isinstance(self.data[r][c], list) and bee in self.data[r][c]:
-                        if bee.simpleMovement:
-                            if nCol != c and nRow != r:
-                                raise Exception("Diagonal movement is not allowed")
+                cell = self.data[r][c]
 
-                            if nRow > r + bee.beeAgility :
-                                raise Exception('nCol and nRow should be smaller than rows')
-                            if nCol > c + bee.beeAgility :
-                                raise Exception('nCol and nRow should be smaller than cols')
+                # bee inside a list
+                if isinstance(cell, list) and bee in cell:
+                    self.is_valid_cell(bee, r, c, nRow, nCol)
 
-                            if self.data[nRow][nCol] is None:
-                                self.data[nRow][nCol] = bee
+                    self.data[nRow][nCol] = bee
+                    cell.remove(bee)
+                    return self.data
 
-                                self.data[r][c].remove(bee)
-                        else:
-                            if not bee.simpleMovement:
+                if cell is bee:
+                    self.is_valid_cell(bee, r, c, nRow, nCol)
 
-                                if nRow > r + bee.beeAgility:
-                                    raise Exception('nCol and nRow should be smaller than rows')
-                                if nCol > c + bee.beeAgility:
-                                    raise Exception('nCol and nRow should be smaller than cols')
+                    self.data[nRow][nCol] = bee
+                    self.data[r][c] = None
+                    return self.data
 
-                                if self.data[nRow][nCol] is None:
-                                    self.data[nRow][nCol] = bee
-
-                                    self.data[r][c].remove(bee)
-
-                    #TODO remove this duplicate code
-                    else:
-                        if self.data[r][c] is bee:
-                            if bee.simpleMovement:
-                                if nCol != c and nRow != r:
-                                    raise Exception("Diagonal movement is not allowed")
-
-                                if nRow > r + bee.beeAgility:
-                                    raise Exception('nCol and nRow should be smaller than rows')
-                                if nCol > c + bee.beeAgility:
-                                    raise Exception('nCol and nRow should be smaller than cols')
-
-                                if self.data[nRow][nCol] is None:
-                                    self.data[nRow][nCol] = bee
-
-                                    self.data[r][c] = None
-                                else:
-                                    if not bee.simpleMovement:
-
-                                        if nRow > r + bee.beeAgility:
-                                            raise Exception('nCol and nRow should be smaller than rows')
-                                        if nCol > c + bee.beeAgility:
-                                            raise Exception('nCol and nRow should be smaller than cols')
-
-                                        if self.data[nRow][nCol] is None:
-                                            self.data[nRow][nCol] = bee
-
-                                            self.data[r][c] = None
-
-        return self.data
+        raise Exception("Bee not found in matrix")
 
 
     def recupFleur(self) -> list[(int ,int)]:
@@ -194,15 +179,36 @@ class GridManager():
         from core.Component.Bee import Bee
         for f in arrFlower:
             r,c = f
-            row , col = f
             r-=1
             c-=1
             #print(r,c)
             for col in range(3):
                 for row in range(3):
                     if isinstance(self.data[r+row][c+col], Bee):
+
                         #TODO finish butinage logic
+
                         print("BEE IN BUTINAGE AREA")
+                        move1, move2 = self.data[r+row][c+col].moveList[-2:]
+                        if move1 == move2:
+                            print("START BUTINAGE")
+                            print(self.data[r][c].flowerNectar)
+                            varNectar = self.data[r][c].reduceNectar()
+                            self.data[r+row][c+col].currentNectar += varNectar
+
+
+    def getBeePos(self) -> None:
+        from core.Component.Bee import Bee
+        rows = len(self.data)
+        cols = len(self.data[0])
+        for r in range(rows):
+            for c in range(cols):
+                if isinstance(self.data[r][c], Bee):
+                    self.data[r][c].moveList.append((r,c))
+
+
+
+
 
 
     def emptyBeeNectar(self ,arrayhive:list) -> None:

@@ -3,9 +3,11 @@ from GridManager import GridManager
 from core.Component.Wall import Wall
 from core.Component.Flower import Flower
 from core.Component.Hive import Hive
-from core.Player import Player
 from core.Component.Bees.BeeTypes import *
+from core.Player import Player
+from core.utilities import evenSplit
 
+from data.constante import COUT_PONTE
 from data.constante import NFLEURS
 from data.constante import NECTAR_INITIAL
 from data.constante import MAX_NECTAR
@@ -23,21 +25,21 @@ inputP2 = input("Nom du Joueur 2:")
 inputP3 = input("Nom du Joueur 3:")
 inputP4 = input("Nom du Joueur 4:")
 
-p1 = Player(NECTAR_INITIAL,inputP1)
-p2 = Player(NECTAR_INITIAL,inputP2)
-p3 = Player(NECTAR_INITIAL,inputP3)
-p4 = Player(NECTAR_INITIAL,inputP4)
+p1 = Player(inputP1)
+p2 = Player(inputP2)
+p3 = Player(inputP3)
+p4 = Player(inputP4)
 
 PLAYERS = [p1,p2,p3,p4]
 
-H1 = Hive("h1",p1 ,[],MAX_NECTAR,0)
-H2 = Hive("h2",p2,[],MAX_NECTAR,0)
-H3 = Hive("h3",p3,[],MAX_NECTAR,0)
-H4 = Hive("h4",p4,[],MAX_NECTAR,0)
+H1 = Hive("h1",p1 ,[],MAX_NECTAR,NECTAR_INITIAL)
+H2 = Hive("h2",p2,[],MAX_NECTAR,NECTAR_INITIAL)
+H3 = Hive("h3",p3,[],MAX_NECTAR,NECTAR_INITIAL)
+H4 = Hive("h4",p4,[],MAX_NECTAR,NECTAR_INITIAL)
 
 HIVES = [H1,H2,H3,H4]
 
-F = Flower("f", NECTAR_INITIAL)
+F = Flower("f", evenSplit(NFLEURS,MAX_NECTAR))
 
 gm = GridManager(NCASES)
 tmp, hive_coords = gm.addObject(W, H1, H2, H3, H4)
@@ -50,18 +52,23 @@ gm.render()
 #TODO complet overhaul turn logic
 while TIME_OUT > 0:
     for i in range(len(HIVES)):
+
+        canSpawn = False
+        canMove = False
+
         print(f"Player :{HIVES[i].owner.playerName}")
-        print(f"nectar actuelle :{HIVES[i].owner.playerNectarInitial}")
+        print(f"nectar actuelle :{HIVES[i].currentNectar}")
         print("faite un choix")
         print(" 1. Pondre")
         print(" 2. Bouger un abielle")
+        print(" 3. passer le tour")
         choice = input("entrez un choix : ")
 
         if choice == "1":
 
             # Spawing Prototype (Working)
 
-            print(f"nectar actuelle :{HIVES[i].owner.playerNectarInitial}")
+            print(f"nectar actuelle :{HIVES[i].currentNectar}")
 
             beePlayerInput = input("Pondre une abeille : ")
 
@@ -75,10 +82,11 @@ while TIME_OUT > 0:
             #TODO change when not enough nectar
             row, col = hive_coords[i]
             gm.data[row][col] = gm.cellToList(row, col)
-            #TODO sync player Nectar with HIve nectar
-            if HIVES[i].owner.playerNectarInitial >= DummyObjectbeeData.nectarCost and len(gm.data[row][col])==1:
-                HIVES[i].owner.playerNectarInitial -= DummyObjectbeeData.nectarCost
-                print(HIVES[i].owner.playerNectarInitial)
+
+
+            if HIVES[i].currentNectar >= COUT_PONTE and len(gm.data[row][col])==1:
+                HIVES[i].currentNectar -= COUT_PONTE
+                print(HIVES[i].currentNectar)
                 bee_ = HIVES[i].spawnBee(beePlayerInput)
                 gm.data[row][col].append(bee_)
                 print(HIVES[i].beeList)
@@ -87,17 +95,26 @@ while TIME_OUT > 0:
                 del DummyObjectbeeData
                 gm.render()
 
+
         #MOVEMENTE
         if len(HIVES[i].beeList) != 0:
-            #print("can move")
             for bee in HIVES[i].beeList:
-                newRow = int(input("Nouvelle ligne :"))
-                newCol = int(input("Nouvelle Column :"))
-                gm.moveObject(bee ,newRow,newCol)
-                gm.cleanGrid()
-                gm.render()
+                print(f"voulez vous bouger l'abeille {bee}")
+                skip = int(input("entrez un skip : "))
+                if skip == 1:
+                    newRow = int(input("Nouvelle ligne :"))
+                    newCol = int(input("Nouvelle Column :"))
+                    gm.moveObject(bee ,newRow,newCol)
+                    gm.cleanGrid()
+                    gm.render()
+                else:
+                    continue
         else:
             print("can't move")
+
+        if choice == "3":
+            continue
+
 
     winner_array=[]
     for i in range(len(HIVES)):
@@ -106,9 +123,9 @@ while TIME_OUT > 0:
 
 
     arr_f = gm.recupFleur()
+    gm.getBeePos()
     gm.flowerButinage(arr_f)
-
-    gm.emptyBeeNectar()
+    gm.emptyBeeNectar(hive_coords)
 
     # fin de Gagnant
     #TODO RE-work winning condition
