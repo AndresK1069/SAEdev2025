@@ -15,7 +15,6 @@ class Bee(object):
         self.moveList = moveList
 
     def checkOverFlow(self) -> None:
-        #TODO add a more refine way to check for over flow
         if self.currentNectar > self.maxNectar:
             self.currentNectar = self.maxNectar
 

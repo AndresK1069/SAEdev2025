@@ -185,16 +185,13 @@ class GridManager():
             for col in range(3):
                 for row in range(3):
                     if isinstance(self.data[r+row][c+col], Bee):
-
-                        #TODO finish butinage logic
-
-                        print("BEE IN BUTINAGE AREA")
                         move1, move2 = self.data[r+row][c+col].moveList[-2:]
                         if move1 == move2:
-                            print("START BUTINAGE")
-                            print(self.data[reel_row][reel_col].flowerNectar)
+                            #print(self.data[reel_row][reel_col].flowerNectar)
                             varNectar = self.data[reel_row][reel_col].reduceNectar()
                             self.data[r+row][c+col].currentNectar += varNectar
+                            self.data[r + row][c + col].checkOverFlow()
+
 
 
     def getBeePos(self) -> None:

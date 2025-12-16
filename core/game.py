@@ -97,6 +97,7 @@ while TIME_OUT > 0:
         if len(HIVES[i].beeList) != 0:
             for bee in HIVES[i].beeList:
                 print(f"voulez vous bouger l'abeille {bee}")
+                print(f"nectar actuelle :{bee.currentNectar}")
                 skip = int(input("entrez un skip : "))
                 if skip == 1:
                     newRow = int(input("Nouvelle ligne :"))
