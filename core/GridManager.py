@@ -223,6 +223,8 @@ class GridManager():
                         self.data[row_][row_].currentNectar += nectarStock
                         self.data[r + row][c + col].currentNectar -= nectarStock
 
+    #TODO create safe zone
+
 
     def render(self)->None:
         for row in self.data:
