@@ -117,10 +117,6 @@ while TIME_OUT > 0:
             continue
 
 
-    winner_array=[]
-    for i in range(len(HIVES)):
-        if HIVES[i].currentNectar == HIVES[i].maxNectar:
-            winner_array.append(HIVES[i].owner.playerName)
 
 
     arr_f = gm.recupFleur()
@@ -130,20 +126,15 @@ while TIME_OUT > 0:
     gm.checkEscarmouche()
     gm.checkBeeHealth()
 
-    #fin de Gagnant
-    #TODO RE-work winning condition
-    if len(winner_array) != 0:
-        if len(winner_array) == 1:
-            print(f"{winner_array[0]} a gagnez !!!")
-        else:
-            for name in winner_array:
-                print(name)
-            print("Sont arriver ex aequo")
+    if TIME_OUT == 0:
+        gm.maxNectar(hive_coords)
+        pass
+
+
+    if gm.getBeeNectar() == 0 and gm.getBeeNectar() == 0 or gm.isWinner(hive_coords)[0]:
+        boolIswinner_ , winner_row , winner_col = gm.isWinner(hive_coords)
+        print("gm.data[winner_row][winner_col].owner.playerName")
         break
-
-    #TODO at the end of every check for fights and flower
-
-
 
 
     TIME_OUT -= 1

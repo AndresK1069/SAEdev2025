@@ -2,6 +2,7 @@ from core.Component.Wall import Wall
 from core.Component.Hive import Hive
 from core.Component.Flower import Flower
 from random import randint
+from data.constante import MAX_NECTAR
 import copy
 
 
@@ -226,6 +227,7 @@ class GridManager():
 
     def checkEscarmouche(self) -> None:
         from core.Component.Bee import Bee
+        #TODO finish escarmouche
         print("checking for Escarmouche ... ")
         rows = len(self.data)
         cols = len(self.data[0])
@@ -254,6 +256,54 @@ class GridManager():
                 if isinstance(self.data[r][c], Bee) and self.data[r][c].isStun:
                     if self.data[r][c].stunCounter <= 0:
                         self.data[r][c].isStun = False
+
+    def getFlowerNectar(self) -> int:
+        nectar = 0
+        rows = len(self.data)
+        cols = len(self.data[0])
+        for r in range(rows):
+            for c in range(cols):
+                if isinstance(self.data[r][c], Flower):
+                    nectar +=  self.data[r][c].flowerNectar
+        return nectar
+
+    def getBeeNectar(self) -> int:
+        nectar = 0
+        from core.Component.Bee import Bee
+        rows = len(self.data)
+        cols = len(self.data[0])
+        for r in range(rows):
+            for c in range(cols):
+                if isinstance(self.data[r][c], Bee):
+                    nectar += self.data[r][c].currentNectar
+        return nectar
+
+    def isWinner(self, arrayhive:list) -> None:
+        won = False
+        winning_hive_row = 0
+        winning_hive_col = 0
+        for x in arrayhive:
+            r ,c = x
+            if self.data[r][c].currentNectar >= MAX_NECTAR:
+                won = True
+                winning_hive_row =r
+                winning_hive_col = c
+                break
+
+        return won, winning_hive_row, winning_hive_col
+
+    def maxNectar(self, arrayhive:list) -> None:
+        max=0
+        winning_hive_row = 0
+        winning_hive_col = 0
+        for x in arrayhive:
+            r,c = x
+            if self.data[r][c].currentNectar > max:
+                winning_hive_row =r
+                winning_hive_col =c
+        return winning_hive_row, winning_hive_col
+
+
 
     #TODO create safe zone
 
