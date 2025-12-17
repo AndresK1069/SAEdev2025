@@ -50,7 +50,6 @@ class GridManager():
 
         chunk = cols // 3
         middle_line = rows // 2
-
         possible_cells = []
 
         for r in range(rows):
@@ -222,6 +221,39 @@ class GridManager():
                         nectarStock = self.data[r + row][c + col].currentNectar
                         self.data[row_][row_].currentNectar += nectarStock
                         self.data[r + row][c + col].currentNectar -= nectarStock
+
+
+
+    def checkEscarmouche(self) -> None:
+        from core.Component.Bee import Bee
+        print("checking for Escarmouche ... ")
+        rows = len(self.data)
+        cols = len(self.data[0])
+        for r in range(rows):
+            for c in range(cols):
+                if isinstance(self.data[r][c], Bee):
+                    corner_r = r-1
+                    corner_c = c-1
+                    for col in range(3):
+                        for row in range(3):
+                            if isinstance(self.data[corner_r+row][corner_c+col], Bee) and r!= col and c!= row:
+                                print("found escarmouche")
+                                self.data[corner_r+row][corner_c+col].beeHealth -= self.data[r][c].beeStrength
+
+    def checkBeeHealth(self) -> None:
+        from core.Component.Bee import Bee
+        rows = len(self.data)
+        cols = len(self.data[0])
+        for r in range(rows):
+            for c in range(cols):
+                if isinstance(self.data[r][c], Bee):
+                    if self.data[r][c].beeHealth <= 0:
+                        self.data[r][c].stun()
+                if isinstance(self.data[r][c], Bee) and self.data[r][c].isStun:
+                    self.data[r][c].stunCounter-=1
+                if isinstance(self.data[r][c], Bee) and self.data[r][c].isStun:
+                    if self.data[r][c].stunCounter <= 0:
+                        self.data[r][c].isStun = False
 
     #TODO create safe zone
 

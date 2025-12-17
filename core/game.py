@@ -45,14 +45,14 @@ gm = GridManager(NCASES)
 tmp, hive_coords = gm.addObject(W, H1, H2, H3, H4)
 #print(hive_coords)
 gm.spawnFlower(F,NFLEURS)
-gm.render()
 
 
 
-#TODO complet overhaul turn logic
+
+
 while TIME_OUT > 0:
     for i in range(len(HIVES)):
-
+        gm.render()
         print(f"Player :{HIVES[i].owner.playerName}")
         print(f"nectar actuelle :{HIVES[i].currentNectar}")
         print("faite un choix")
@@ -61,7 +61,7 @@ while TIME_OUT > 0:
         print(" 3. passer le tour")
         choice = input("entrez un choix : ")
 
-        if choice == "1":
+        if choice == "1" and HIVES[i].currentNectar >= COUT_PONTE:
 
             # Spawing Prototype (Working)
 
@@ -75,8 +75,6 @@ while TIME_OUT > 0:
             bee_class = BEE_TYPES[beePlayerInput]
             DummyObjectbeeData = bee_class()
 
-            #check if player have enough nectar and if yes  spawn bee
-            #TODO change when not enough nectar
             row, col = hive_coords[i]
             gm.data[row][col] = gm.cellToList(row, col)
 
@@ -129,9 +127,8 @@ while TIME_OUT > 0:
     gm.getBeePos()
     gm.flowerButinage(arr_f)
     gm.emptyBeeNectar(hive_coords)
-
-
-    #TODO ADD damage/escarmouche sys and de stun
+    gm.checkEscarmouche()
+    gm.checkBeeHealth()
 
     #fin de Gagnant
     #TODO RE-work winning condition
