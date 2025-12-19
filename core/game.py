@@ -3,9 +3,8 @@ from GridManager import GridManager
 from core.Component.Wall import Wall
 from core.Component.Flower import Flower
 from core.Component.Hive import Hive
-from core.Component.Bees.BeeTypes import *
 from core.Player import Player
-from core.utilities import evenSplit
+from core.utilities import evenSplit, getBeeStats
 
 from data.constante import COUT_PONTE
 from data.constante import NFLEURS
@@ -32,10 +31,10 @@ p4 = Player(inputP4)
 
 PLAYERS = [p1,p2,p3,p4]
 
-H1 = Hive("h1",p1 ,[],MAX_NECTAR,NECTAR_INITIAL)
-H2 = Hive("h2",p2,[],MAX_NECTAR,NECTAR_INITIAL)
-H3 = Hive("h3",p3,[],MAX_NECTAR,NECTAR_INITIAL)
-H4 = Hive("h4",p4,[],MAX_NECTAR,NECTAR_INITIAL)
+H1 = Hive("h1",p1 ,[],MAX_NECTAR,NECTAR_INITIAL ,[])
+H2 = Hive("h2",p2,[],MAX_NECTAR,NECTAR_INITIAL,[])
+H3 = Hive("h3",p3,[],MAX_NECTAR,NECTAR_INITIAL,[])
+H4 = Hive("h4",p4,[],MAX_NECTAR,NECTAR_INITIAL,[])
 
 HIVES = [H1,H2,H3,H4]
 
@@ -51,6 +50,20 @@ gm.spawnFlower(F,NFLEURS)
 
 
 while TIME_OUT > 0:
+
+
+    if TIME_OUT == 0:
+        w_row ,w_col = gm.maxNectar(hive_coords)
+        print(f"{gm.data[w_row][w_col].owner} Won")
+        break
+
+
+    if gm.getFlowerNectar() == 0 and gm.getBeeNectar() == 0 or gm.isWinner(hive_coords)[0]:
+        boolIswinner_ , winner_row , winner_col = gm.isWinner(hive_coords)
+        print(f"{gm.data[winner_row][winner_col].owner.playerName} Won")
+        break
+
+
     for i in range(len(HIVES)):
         gm.render()
         print(f"Player :{HIVES[i].owner.playerName}")
@@ -68,12 +81,7 @@ while TIME_OUT > 0:
             print(f"nectar actuelle :{HIVES[i].currentNectar}")
 
             beePlayerInput = input("Pondre une abeille : ")
-
-            #TODO Move to its own method
-
-            beePlayerInput.lower()
-            bee_class = BEE_TYPES[beePlayerInput]
-            DummyObjectbeeData = bee_class()
+            DummyObjectbeeData = getBeeStats(beePlayerInput)
 
             row, col = hive_coords[i]
             gm.data[row][col] = gm.cellToList(row, col)
@@ -125,16 +133,6 @@ while TIME_OUT > 0:
     gm.emptyBeeNectar(hive_coords)
     gm.checkEscarmouche()
     gm.checkBeeHealth()
-
-    if TIME_OUT == 0:
-        gm.maxNectar(hive_coords)
-        pass
-
-
-    if gm.getBeeNectar() == 0 and gm.getBeeNectar() == 0 or gm.isWinner(hive_coords)[0]:
-        boolIswinner_ , winner_row , winner_col = gm.isWinner(hive_coords)
-        print("gm.data[winner_row][winner_col].owner.playerName")
-        break
 
 
     TIME_OUT -= 1

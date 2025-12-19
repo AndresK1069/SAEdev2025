@@ -85,6 +85,23 @@ class GridManager():
 
         return self.data
 
+
+    def getBattleZone(self, wall: Wall) -> list[list]:
+        rows = len(self.data)
+        cols = len(self.data[0])
+
+        chunk = cols // 3
+        middle_line = rows // 2
+
+        for r in range(rows):
+            for c in range(cols):
+                if chunk - 1 < c < cols - chunk:
+                    self.data[r][c] = wall
+                if chunk -1 < r < cols-chunk  :
+                    self.data[r][c] = wall
+        return self.data
+
+
     def cellToList(self, row: int, col: int) -> list:
         varObject = self.data[row][col]
         return [copy.copy(varObject)]
@@ -227,7 +244,6 @@ class GridManager():
 
     def checkEscarmouche(self) -> None:
         from core.Component.Bee import Bee
-        #TODO finish escarmouche
         print("checking for Escarmouche ... ")
         rows = len(self.data)
         cols = len(self.data[0])
@@ -240,6 +256,7 @@ class GridManager():
                         for row in range(3):
                             if isinstance(self.data[corner_r+row][corner_c+col], Bee) and r!= col and c!= row:
                                 print("found escarmouche")
+                                #TODO add propre battle
                                 self.data[corner_r+row][corner_c+col].beeHealth -= self.data[r][c].beeStrength
 
     def checkBeeHealth(self) -> None:
@@ -304,8 +321,11 @@ class GridManager():
         return winning_hive_row, winning_hive_col
 
 
+    def setSafeZoner(self):
+        # TODO create safe zone
+        pass
 
-    #TODO create safe zone
+
 
 
     def render(self)->None:
