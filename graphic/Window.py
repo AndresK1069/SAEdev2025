@@ -84,5 +84,8 @@ class Window:
                     )
         return None
 
+    def canvaClear(self):
+        self.canvas.delete("all")
+
     def run(self):
         self.window.mainloop()

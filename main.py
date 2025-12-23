@@ -49,8 +49,9 @@ gm.spawnFlower(F,NFLEURS)
 window = Window(SIZE, WINDOW_TITLE, NCASES)
 view = GameView(window, background, gm)
 view.render()
-window.run()
+
 
 
 controller = GameController(gm, HIVES, hive_coords, view, TIME_OUT)
 controller.run()
+window.run()

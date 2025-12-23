@@ -15,6 +15,10 @@ class GameView:
         self.window.drawCell()
         self.window.renderMatrix(self.grid)
 
+    def clearCanva(self):
+        self.window.canvaClear()
+
+
     def show_player(self, hive:Hive):
         print(f"\nPlayer : {hive.owner.playerName}")
         print(f"Nectar actuel : {hive.currentNectar}")
