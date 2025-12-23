@@ -58,13 +58,31 @@ class Window:
                     )
 
                 if isinstance(matrix.data[r][c], Bourdon):
-                    pass
+                    self.canvas.create_rectangle(
+                        r * self.cellSize,
+                        c * self.cellSize,
+                        (r + 1) * self.cellSize,
+                        (c + 1) * self.cellSize,
+                        fill="gold"
+                    )
 
                 if isinstance(matrix.data[r][c], Eclaireuse):
-                    pass
+                    self.canvas.create_rectangle(
+                        r * self.cellSize,
+                        c * self.cellSize,
+                        (r + 1) * self.cellSize,
+                        (c + 1) * self.cellSize,
+                        fill="deep sky blue"
+                    )
 
                 if isinstance(matrix.data[r][c], Ouvriere):
-                    pass
+                    self.canvas.create_rectangle(
+                        r * self.cellSize,
+                        c * self.cellSize,
+                        (r + 1) * self.cellSize,
+                        (c + 1) * self.cellSize,
+                        fill="red"
+                    )
 
                 if isinstance(matrix.data[r][c], Hive):
                     self.canvas.create_rectangle(
@@ -86,6 +104,26 @@ class Window:
 
     def canvaClear(self):
         self.canvas.delete("all")
+
+    def waitForClick(self):
+        self._click_var = tk.IntVar()
+        self._click_pos = None
+
+        def on_click(event):
+            col = event.x // self.cellSize
+            row = event.y // self.cellSize
+            self._click_pos = (row, col)
+            self._click_var.set(1)  # unblock wait_variable
+
+        self.canvas.bind("<Button-1>", on_click)
+
+        # Wait until a click happens
+        self.window.wait_variable(self._click_var)
+
+        # Stop listening after click
+        self.canvas.unbind("<Button-1>")
+
+        return self._click_pos
 
     def run(self):
         self.window.mainloop()

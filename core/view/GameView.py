@@ -1,3 +1,5 @@
+from tkinter import simpledialog
+
 from core.Component.Hive import Hive
 from core.GridManager import GridManager
 from graphic.Window import Window
@@ -29,4 +31,10 @@ class GameView:
         print("3. Passer le tour")
 
     def ask_choice(self):
-        return input("Entrez un choix : ")
+        choice = simpledialog.askinteger(
+            "Action",
+            f"choisissez une action :\n1: Pondre\n2: Bouger\n3: Passer le tour",
+            minvalue=1,
+            maxvalue=3
+        )
+        return choice

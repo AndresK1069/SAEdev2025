@@ -257,6 +257,7 @@ class GridManager():
                             if isinstance(self.data[corner_r+row][corner_c+col], Bee) and r!= col and c!= row:
                                 print("found escarmouche")
                                 #TODO add propre battle
+                                #FIXME IT FOUND AN ESCARMOUCHE WHEN NONE WAS PRESENT
                                 self.data[corner_r+row][corner_c+col].beeHealth -= self.data[r][c].beeStrength
 
     def checkBeeHealth(self) -> None:

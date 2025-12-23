@@ -1,4 +1,6 @@
-from data.constante import COUT_PONTE
+from tkinter import simpledialog
+
+from data.constante import COUT_PONTE, NCASES
 
 
 class GameController:
@@ -27,19 +29,23 @@ class GameController:
         self.view.show_menu()
         choice = self.view.ask_choice()
 
-        if choice == "1":
+        if choice == 1:
             self.spawn_bee(hive)
             self.move_bees(hive)
-        elif choice == "2":
+        elif choice == 2:
             self.move_bees(hive)
-        # choice == "3" → do nothing (pass turn)
+        elif choice == 3:
+            pass
 
     def spawn_bee(self, hive):
         from core.utilities import getBeeStats
         if hive.currentNectar < COUT_PONTE:
             return
 
-        bee_type = input("Pondre une abeille : ")
+        bee_type = simpledialog.askstring(
+            f"{hive.owner.playerName} Spawn Bee",
+            "Nom de L'aibeille",
+        )
         DummyObjectbeeData = getBeeStats(bee_type)
 
         index = self.hives.index(hive)
@@ -50,6 +56,9 @@ class GameController:
             hive.currentNectar -= COUT_PONTE
             bee = hive.spawnBee(bee_type)
             self.gm.data[row][col].append(bee)
+            self.view.clearCanva()
+            self.view.render()
+
             del DummyObjectbeeData
 
     def move_bees(self, hive):
@@ -58,12 +67,20 @@ class GameController:
                 bee.stunCounter -= 1
                 continue
 
-            move = int(input(f"Bouger {bee}? (1 oui / 0 non): "))
+            move  = simpledialog.askinteger(
+            f"{hive.owner.playerName}Action",
+            f"Bouger {bee}? (1 oui / 0 non)",
+            minvalue=0,
+            maxvalue=1
+        )
+
             if move == 1:
-                r = int(input("Nouvelle ligne : "))
-                c = int(input("Nouvelle colonne : "))
-                self.gm.moveObject(bee, r, c)
+                #get bee mobility to put in valid spot
+                r,c = self.view.window.waitForClick()
+                self.gm.moveObject(bee, c, r)
                 self.gm.cleanGrid()
+                self.view.clearCanva()
+                self.view.render()
 
     def end_round(self):
         arr_f = self.gm.recupFleur()
