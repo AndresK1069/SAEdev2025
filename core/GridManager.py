@@ -86,7 +86,7 @@ class GridManager():
         return self.data
 
 
-    def getBattleZone(self, wall: Wall) -> list[list]:
+    def getBattleZone(self, wall) -> list[list]:
         rows = len(self.data)
         cols = len(self.data[0])
 

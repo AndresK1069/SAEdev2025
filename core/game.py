@@ -1,4 +1,8 @@
+#FIXME delete this file
+
+
 from GridManager import GridManager
+from core.Component.Grass import Grass
 
 from core.Component.Wall import Wall
 from core.Component.Flower import Flower
@@ -13,9 +17,13 @@ from data.constante import MAX_NECTAR
 from data.constante import TIME_OUT
 from data.constante import NCASES
 
+#RENDER
+from graphic.Window import Window
+from data.constante import SIZE,WINDOW_TITLE
 
-W= Wall("W")
-G =Wall("G")
+
+W = Wall("W")
+G = Wall("G")
 
 empty_b = []
 
@@ -40,12 +48,19 @@ HIVES = [H1,H2,H3,H4]
 
 F = Flower("f", evenSplit(NFLEURS,MAX_NECTAR))
 
+G= Grass("G")
+background = GridManager(NCASES)
+background.getBattleZone(G)
+
 gm = GridManager(NCASES)
 tmp, hive_coords = gm.addObject(W, H1, H2, H3, H4)
-#print(hive_coords)
 gm.spawnFlower(F,NFLEURS)
 
-
+window = Window(SIZE,WINDOW_TITLE,NCASES)
+window.renderMatrix(background)
+window.drawCell()
+window.renderMatrix(gm)
+window.run()
 
 
 
@@ -117,10 +132,6 @@ while TIME_OUT > 0:
                 else:
                     print(f"il vous reste {bee.stunCounter} avant de pouvoir bouger")
                     bee.stunCounter -= 1
-
-        else:
-            print("can't move")
-
         if choice == "3":
             continue
 

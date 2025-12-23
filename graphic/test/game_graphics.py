@@ -15,7 +15,8 @@ test = GridManager(15)
 test.getBattleZone(grass)
 
 
-
+def on_click(event):
+    coords.set((event.x, event.y))
 
 if SIZE%3 !=0:
     raise ValueError("WIDTH must be divisible by 3")
@@ -47,6 +48,38 @@ for r in range(len(test.data)):
                 (c+1)*CELL_SIZE,
                 fill="SpringGreen2"
             )
+
+
+
+#get click testes
+coords = tk.Variable()
+root.bind("<Button-1>", on_click)
+
+print("Waiting for click...")
+root.wait_variable(coords)
+
+print("Clicked at:", coords.get())
+x,y = coords.get()
+
+
+def getCellInMatrix(x :int ,y :int):
+    if isinstance(test.data[x][y],Wall):
+        print("WALLLLL")
+
+
+
+
+x= x//CELL_SIZE
+y= y//CELL_SIZE
+
+
+getCellInMatrix(x,y)
+
+
+pos = tk.Variable()
+x = pos.get()
+print(x)
+
 
 
 root.mainloop()
