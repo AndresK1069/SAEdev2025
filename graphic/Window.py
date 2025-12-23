@@ -33,7 +33,7 @@ class Window:
 
     def renderMatrix(self, matrix :GridManager) -> None:
 
-        #TODO split this in two fonctions
+        #TODO split this in two fonctions and list support
 
         for r in range(len(matrix.data)):
             for c in range(len(matrix.data)):
