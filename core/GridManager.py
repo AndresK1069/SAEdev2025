@@ -244,18 +244,24 @@ class GridManager():
         print("checking for Escarmouche ... ")
         rows = len(self.data)
         cols = len(self.data[0])
+
         for r in range(rows):
             for c in range(cols):
-                if isinstance(self.data[r][c], Bee):
-                    corner_r = r-1
-                    corner_c = c-1
-                    for col in range(3):
-                        for row in range(3):
-                            if isinstance(self.data[corner_r+row][corner_c+col], Bee) and r!= col and c!= row:
-                                print("found escarmouche")
-                                #TODO add propre battle
-                                #FIXME IT FOUND AN ESCARMOUCHE WHEN NONE WAS PRESENT
-                                self.data[corner_r+row][corner_c+col].beeHealth -= self.data[r][c].beeStrength
+                bee = self.data[r][c]
+                if isinstance(bee, Bee):
+                    for dr in range(-1, 2):
+                        for dc in range(-1, 2):
+                            nr = r + dr
+                            nc = c + dc
+                            if 0 <= nr < rows and 0 <= nc < cols:
+                                neighbor = self.data[nr][nc]
+                                if (nr, nc) == (r, c):
+                                    continue
+
+                                if isinstance(neighbor, Bee):
+                                    #TODO ADD PROPER BATTLE
+                                    print(f"found escarmouche between ({r},{c}) and ({nr},{nc})")
+                                    neighbor.beeHealth -= bee.beeStrength
 
     def checkBeeHealth(self) -> None:
         from core.Component.Bee import Bee
@@ -299,12 +305,10 @@ class GridManager():
         winning_hive_col = 0
 
         for x in arrayhive:
-            # si x est une liste (Hive + Bees)
             if isinstance(x, list):
                 hive = next((y for y in x if isinstance(y, Hive)), None)
                 if hive is None:
                     continue
-                # récupérer la position de la hive dans la grille
                 r, c = getattr(hive, "row", None), getattr(hive, "col", None)
                 if r is None or c is None:
                     continue
@@ -314,7 +318,6 @@ class GridManager():
                     winning_hive_col = c
                     break
             else:
-                # x est directement la coordonnée (r, c)
                 r, c = x
                 cell = self.data[r][c]
                 if hasattr(cell, "currentNectar") and cell.currentNectar >= MAX_NECTAR:
@@ -331,24 +334,17 @@ class GridManager():
         winning_hive_col = 0
 
         for x in arrayhive:
-            # si la cellule est une liste (Hive + Bees)
             if isinstance(x, list):
-                # chercher l'objet Hive dedans
                 hive = next((y for y in x if isinstance(y, Hive)), None)
                 if hive is None:
                     continue
                 if hive.currentNectar > max_nectar:
                     max_nectar = hive.currentNectar
-                    # récupérer sa position dans la grille
-                    # si tu stockes pas la position dans Hive, tu dois la retrouver
-                    # ici je suppose que x contient la coordonnée dans arrayhive
-                    # donc tu peux faire comme ci-dessous
                     idx = arrayhive.index(x)
                     r, c = arrayhive[idx] if not isinstance(arrayhive[idx], list) else (0, 0)
                     winning_hive_row = r
                     winning_hive_col = c
             else:
-                # x est directement la coordonnée (r, c)
                 r, c = x
                 cell = self.data[r][c]
                 if hasattr(cell, "currentNectar") and cell.currentNectar > max_nectar:
