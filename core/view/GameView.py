@@ -2,7 +2,7 @@ from tkinter import simpledialog
 
 from core.Component.Hive import Hive
 from core.GridManager import GridManager
-from graphic.Window import Window
+from gui.Window import Window
 
 
 class GameView:

@@ -31,7 +31,6 @@ class GameController:
 
         if choice == 1:
             self.spawn_bee(hive)
-            self.move_bees(hive)
         elif choice == 2:
             self.move_bees(hive)
         elif choice == 3:
@@ -39,27 +38,34 @@ class GameController:
 
     def spawn_bee(self, hive):
         from core.utilities import getBeeStats
-        if hive.currentNectar < COUT_PONTE:
-            return
-
-        bee_type = simpledialog.askstring(
-            f"{hive.owner.playerName} Spawn Bee",
-            "Nom de L'aibeille",
-        )
-        DummyObjectbeeData = getBeeStats(bee_type)
-
         index = self.hives.index(hive)
         row, col = self.hive_coords[index]
-        self.gm.data[row][col] = self.gm.cellToList(row, col)
+        if not isinstance(self.gm.data[row][col], list):
+            if hive.currentNectar < COUT_PONTE :
+                return
 
-        if len(self.gm.data[row][col]) == 1:
-            hive.currentNectar -= COUT_PONTE
-            bee = hive.spawnBee(bee_type)
-            self.gm.data[row][col].append(bee)
-            self.view.clearCanva()
-            self.view.render()
+            bee_type = simpledialog.askstring(
+                f"{hive.owner.playerName} Spawn Bee",
+                "Nom de L'aibeille",
+            )
+            DummyObjectbeeData = getBeeStats(bee_type)
 
-            del DummyObjectbeeData
+
+
+            self.gm.data[row][col] = self.gm.cellToList(row, col)
+
+            if len(self.gm.data[row][col]) == 1:
+                hive.currentNectar -= COUT_PONTE
+                bee = hive.spawnBee(bee_type)
+                self.gm.data[row][col].append(bee)
+
+                self.view.clearCanva()
+                self.view.render()
+                del DummyObjectbeeData
+                self.move_bees(hive)
+        else:
+            self.move_bees(hive)
+
 
     def move_bees(self, hive):
         for bee in hive.beeList:
@@ -79,6 +85,7 @@ class GameController:
                 r,c = self.view.window.waitForClick()
                 self.gm.moveObject(bee, c, r)
                 self.gm.cleanGrid()
+
                 self.view.clearCanva()
                 self.view.render()
 

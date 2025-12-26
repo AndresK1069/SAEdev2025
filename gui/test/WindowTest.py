@@ -1,6 +1,6 @@
 from tkinter import Grid
 
-from graphic.Window import Window
+from gui.Window import Window
 from core.GridManager import GridManager
 from core.Component.Wall import Wall
 

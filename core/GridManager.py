@@ -220,27 +220,24 @@ class GridManager():
                 if isinstance(self.data[r][c], Bee):
                     self.data[r][c].moveList.append((r,c))
 
-
-
-
-
-
-    def emptyBeeNectar(self ,arrayhive:list) -> None:
+    def emptyBeeNectar(self, arrayhive: list) -> None:
         from core.Component.Bee import Bee
+
         for f in arrayhive:
-            r, c = f
-            row_, row_ = f
-            r -= 1
-            c -= 1
-            # print(r,c)
-            for col in range(3):
-                for row in range(3):
-                    if isinstance(self.data[r + row][c + col], Bee):
-                        nectarStock = self.data[r + row][c + col].currentNectar
-                        self.data[row_][row_].currentNectar += nectarStock
-                        self.data[r + row][c + col].currentNectar -= nectarStock
+            r, c = f  # coordonnées de la hive
+            # row_ et col_ inutiles ici
+            for col_offset in range(3):
+                for row_offset in range(3):
+                    nr = r + row_offset
+                    nc = c + col_offset
 
-
+                    # sécurité sur les limites de la grille
+                    if 0 <= nr < len(self.data) and 0 <= nc < len(self.data[0]):
+                        cell = self.data[nr][nc]
+                        if isinstance(cell, Bee):
+                            nectarStock = cell.currentNectar
+                            self.data[r][c].currentNectar += nectarStock
+                            cell.currentNectar = 0
 
     def checkEscarmouche(self) -> None:
         from core.Component.Bee import Bee
@@ -296,31 +293,70 @@ class GridManager():
                     nectar += self.data[r][c].currentNectar
         return nectar
 
-    def isWinner(self, arrayhive:list) -> None:
+    def isWinner(self, arrayhive: list):
         won = False
         winning_hive_row = 0
         winning_hive_col = 0
+
         for x in arrayhive:
-            r ,c = x
-            if self.data[r][c].currentNectar >= MAX_NECTAR:
-                won = True
-                winning_hive_row =r
-                winning_hive_col = c
-                break
+            # si x est une liste (Hive + Bees)
+            if isinstance(x, list):
+                hive = next((y for y in x if isinstance(y, Hive)), None)
+                if hive is None:
+                    continue
+                # récupérer la position de la hive dans la grille
+                r, c = getattr(hive, "row", None), getattr(hive, "col", None)
+                if r is None or c is None:
+                    continue
+                if hive.currentNectar >= MAX_NECTAR:
+                    won = True
+                    winning_hive_row = r
+                    winning_hive_col = c
+                    break
+            else:
+                # x est directement la coordonnée (r, c)
+                r, c = x
+                cell = self.data[r][c]
+                if hasattr(cell, "currentNectar") and cell.currentNectar >= MAX_NECTAR:
+                    won = True
+                    winning_hive_row = r
+                    winning_hive_col = c
+                    break
 
         return won, winning_hive_row, winning_hive_col
 
-    def maxNectar(self, arrayhive:list) -> None:
-        max=0
+    def maxNectar(self, arrayhive: list) -> tuple[int, int]:
+        max_nectar = 0
         winning_hive_row = 0
         winning_hive_col = 0
-        for x in arrayhive:
-            r,c = x
-            if self.data[r][c].currentNectar > max:
-                winning_hive_row =r
-                winning_hive_col =c
-        return winning_hive_row, winning_hive_col
 
+        for x in arrayhive:
+            # si la cellule est une liste (Hive + Bees)
+            if isinstance(x, list):
+                # chercher l'objet Hive dedans
+                hive = next((y for y in x if isinstance(y, Hive)), None)
+                if hive is None:
+                    continue
+                if hive.currentNectar > max_nectar:
+                    max_nectar = hive.currentNectar
+                    # récupérer sa position dans la grille
+                    # si tu stockes pas la position dans Hive, tu dois la retrouver
+                    # ici je suppose que x contient la coordonnée dans arrayhive
+                    # donc tu peux faire comme ci-dessous
+                    idx = arrayhive.index(x)
+                    r, c = arrayhive[idx] if not isinstance(arrayhive[idx], list) else (0, 0)
+                    winning_hive_row = r
+                    winning_hive_col = c
+            else:
+                # x est directement la coordonnée (r, c)
+                r, c = x
+                cell = self.data[r][c]
+                if hasattr(cell, "currentNectar") and cell.currentNectar > max_nectar:
+                    max_nectar = cell.currentNectar
+                    winning_hive_row = r
+                    winning_hive_col = c
+
+        return winning_hive_row, winning_hive_col
 
     def setSafeZoner(self):
         # TODO create safe zone

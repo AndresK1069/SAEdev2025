@@ -18,7 +18,7 @@ from data.constante import TIME_OUT
 from data.constante import NCASES
 
 #RENDER
-from graphic.Window import Window
+from gui.Window import Window
 from data.constante import SIZE,WINDOW_TITLE
 
 

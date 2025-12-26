@@ -8,7 +8,7 @@ from core.Player import Player
 from core.utilities import evenSplit
 from core.view.GameView import GameView
 from data.constante import MAX_NECTAR, NECTAR_INITIAL, NFLEURS, WINDOW_TITLE, NCASES, SIZE, TIME_OUT
-from graphic.Window import Window
+from gui.Window import Window
 
 
 W = Wall("W")
