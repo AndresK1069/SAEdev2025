@@ -55,7 +55,7 @@ class Window:
         return dicSprite.get(type(cell))
 
     def renderMatrix(self, matrix: GridManager) -> None:
-        #FIXME FLOWER TEXTURE(Not the texture but tracker is kinda shifted for bees and flowers) ARE PLACED WITH AN OFFSET and handle stun bees
+        #FIXME handle stun bees
         if not hasattr(self.canvas, "images"):
             self.canvas.images = []
 
