@@ -22,10 +22,10 @@ inputP2 = "j2"
 inputP3 = "j3"
 inputP4 = "j4"
 
-p1 = Player(inputP1)
-p2 = Player(inputP2)
-p3 = Player(inputP3)
-p4 = Player(inputP4)
+p1 = Player(inputP1,"red","yellow")
+p2 = Player(inputP2,"gold","green")
+p3 = Player(inputP3,"coral","cyan")
+p4 = Player(inputP4,"pink","purple")
 
 PLAYERS = [p1,p2,p3,p4]
 

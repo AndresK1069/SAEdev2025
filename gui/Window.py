@@ -49,7 +49,7 @@ class Window:
             Bourdon:Texture("assets/bourdon.png").resize(self.cellSize),
             Eclaireuse:Texture("assets/eclaireuse.png").resize(self.cellSize),
             Ouvriere: Texture("assets/ouvriere.png").resize(self.cellSize),
-            Hive:Texture("assets/hive.png").resize(self.cellSize),
+            Hive:Texture("assets/hive.png").resize(self.cellSize).getGrayScale(),
             Flower:Texture("assets/flower.png").resize(self.cellSize)
         }
         return dicSprite.get(type(cell))
@@ -73,6 +73,11 @@ class Window:
                     offset = 0
                     for obj in cell:
                         sprite = self.getSprite(obj)
+                        if isinstance(obj, Hive):
+                            color_1 = obj.owner.primaryColor
+                            color_2 =obj.owner.secondaryColor
+                            sprite.getColorize(color_1, color_2,0.5)
+
                         if sprite is None:
                             continue
                         img = ImageTk.PhotoImage(sprite.image)
@@ -88,6 +93,10 @@ class Window:
 
                 # Single object
                 sprite = self.getSprite(cell)
+                if isinstance(cell, Hive):
+                    color_1 = cell.owner.primaryColor
+                    color_2 = cell.owner.secondaryColor
+                    sprite.getColorize(color_1, color_2, 0.5)
                 if sprite is None:
                     continue
                 img = ImageTk.PhotoImage(sprite.image)
