@@ -1,4 +1,8 @@
 import tkinter as tk
+from tkinter.ttk import Label
+
+from PIL import ImageTk
+
 from core.GridManager import GridManager
 
 from core.Component.Wall import Wall
@@ -7,6 +11,7 @@ from core.Component.Bees import Bourdon,Eclaireuse,Ouvriere
 from core.Component.Hive import Hive
 from core.Component.Flower import Flower
 from data.constante import NCASES
+from gui.Textures import Texture
 
 
 class Window:
@@ -16,7 +21,7 @@ class Window:
         self.ncase = ncase
         if self.size % 3 !=0:
             raise Exception("Size must be divisible by 3")
-
+        self.toolTip = None
         self.cellSize = self.size //self.ncase
 
         self.title = title
@@ -36,48 +41,94 @@ class Window:
     def getSprite(self , cell):
 
         if cell is None:
-            pass
+            return None
 
         dicSprite = {
-            Wall:"grey",
-            Grass:"green",
-            Bourdon:"gold",
-            Eclaireuse:"deep sky blue",
-            Ouvriere:"red",
-            Hive:"yellow",
-            Flower:"pink"
+            Wall:Texture("assets/wall.png").resize(self.cellSize),
+            Grass:Texture("assets/grass.png").resize(self.cellSize),
+            Bourdon:Texture("assets/bourdon.png").resize(self.cellSize),
+            Eclaireuse:Texture("assets/eclaireuse.png").resize(self.cellSize),
+            Ouvriere: Texture("assets/ouvriere.png").resize(self.cellSize),
+            Hive:Texture("assets/hive.png").resize(self.cellSize),
+            Flower:Texture("assets/flower.png").resize(self.cellSize)
         }
         return dicSprite.get(type(cell))
 
-    def renderMatrix(self, matrix :GridManager) -> None:
+    def renderMatrix(self, matrix: GridManager) -> None:
+        #FIXME FLOWER TEXTURE(Not the texture but tracker is kinda shifted for bees and flowers) ARE PLACED WITH AN OFFSET and handle stun bees
+        if not hasattr(self.canvas, "images"):
+            self.canvas.images = []
+
         for r in range(len(matrix.data)):
-            for c in range(len(matrix.data)):
+            for c in range(len(matrix.data[r])):
+                cell = matrix.data[r][c]
+                if cell is None:
+                    continue
 
-                if matrix.data[r][c] is None:
-                    pass
+                x_pixel = c * self.cellSize
+                y_pixel = r * self.cellSize
 
-                if isinstance(matrix.data[r][c], list):
-                    for x in matrix.data[r][c]:
-                        color = self.getSprite(x)
-                        self.canvas.create_rectangle(
-                            r * self.cellSize,
-                            c * self.cellSize,
-                            (r + 1) * self.cellSize,
-                            (c + 1) * self.cellSize,
-                            fill=color
+                # Multiple objects in one cell
+                if isinstance(cell, list):
+                    offset = 0
+                    for obj in cell:
+                        sprite = self.getSprite(obj)
+                        if sprite is None:
+                            continue
+                        img = ImageTk.PhotoImage(sprite.image)
+                        self.canvas.images.append(img)
+                        self.canvas.create_image(
+                            x_pixel + offset,
+                            y_pixel + offset,
+                            image=img,
+                            anchor="nw"
                         )
-                    pass
+                        offset += 5
+                    continue
 
-                color = self.getSprite(matrix.data[r][c])
-
-                self.canvas.create_rectangle(
-                    r * self.cellSize,
-                    c * self.cellSize,
-                    (r + 1) * self.cellSize,
-                    (c + 1) * self.cellSize,
-                    fill=color
+                # Single object
+                sprite = self.getSprite(cell)
+                if sprite is None:
+                    continue
+                img = ImageTk.PhotoImage(sprite.image)
+                self.canvas.images.append(img)
+                self.canvas.create_image(
+                    x_pixel,
+                    y_pixel,
+                    image=img,
+                    anchor="nw"
                 )
-        return None
+
+    def track_mouse(self, matrix: GridManager, lastLoc: list, isUp: bool):
+        x = self.window.winfo_pointerx() - self.window.winfo_rootx()
+        y = self.window.winfo_pointery() - self.window.winfo_rooty()
+        if x < self.size and y < self.size:
+            col = x // self.cellSize  # column index
+            row = y // self.cellSize  # row index
+            if matrix.data[row][col] is not None:
+                if not isinstance(matrix.data[row][col], Wall):
+                    if len(lastLoc) == 0:
+                        lastLoc[:] = [row, col]
+                        isUp = False
+                    if len(lastLoc) == 2 and lastLoc[0] == row and lastLoc[1] == col:
+                        if not hasattr(self, "toolTip") or self.toolTip is None:
+                            isUp = True
+                            self.toolTip = Label(self.window,text=self.getInfo(matrix.data[row][col]),anchor="center",background="lightblue")
+                            self.toolTip.pack()
+                    if len(lastLoc) == 2 and (lastLoc[0] != row or lastLoc[1] != col):
+                        if hasattr(self, "toolTip") and self.toolTip is not None:
+                            lastLoc.clear()
+                            isUp = False
+                            self.toolTip.destroy()
+                            self.toolTip = None
+            if matrix.data[row][col] is None or isinstance(matrix.data[row][col], Wall):
+                if hasattr(self, "toolTip") and self.toolTip is not None:
+                    lastLoc.clear()
+                    isUp = False
+                    self.toolTip.destroy()
+                    self.toolTip = None
+
+        self.window.after(50, self.track_mouse, matrix, lastLoc, isUp)
 
     def canvaClear(self):
         self.canvas.delete("all")
@@ -90,17 +141,29 @@ class Window:
             col = event.x // self.cellSize
             row = event.y // self.cellSize
             self._click_pos = (row, col)
-            self._click_var.set(1)  # unblock wait_variable
+            self._click_var.set(1)
 
         self.canvas.bind("<Button-1>", on_click)
-
-        # Wait until a click happens
         self.window.wait_variable(self._click_var)
-
-        # Stop listening after click
         self.canvas.unbind("<Button-1>")
 
         return self._click_pos
+    def getInfo(self,cell):
+        if isinstance(cell, Flower):
+            f =f"Nectar actuelle : {cell.flowerNectar}"
+            return f
+        if isinstance(cell , Hive):
+            f=f"Propriétaire : {cell.owner.playerName}\nNectar actuelle : {cell.currentNectar}"
+            return f
+        if isinstance(cell , Eclaireuse):
+            f = f"Abeillie : Eclaireuse\nVie : {cell.currenthealth}/{cell.beeHealth}\nForce : {cell.beeStrength}\nNectar actuelle : {cell.currentNectar}/{cell.maxNectar}\nTours Restants(si Escarmouche) : {cell.stunCounter}"
+            return f
+        if isinstance(cell, Ouvriere):
+            f = f"Abeillie : Ouvriere\nVie : {cell.currenthealth}/{cell.beeHealth}\nForce : {cell.beeStrength}\nNectar actuelle : {cell.currentNectar}/{cell.maxNectar}\nTours Restants(si Escarmouche) : {cell.stunCounter}"
+            return f
+        if isinstance(cell, Bourdon):
+            f = f"Abeillie : Bourdon\nVie : {cell.currenthealth}/{cell.beeHealth}\nForce : {cell.beeStrength}\nNectar actuelle : {cell.currentNectar}/{cell.maxNectar}\nTours Restants(si Escarmouche) : {cell.stunCounter}"
+            return f
 
     def run(self):
         self.window.mainloop()

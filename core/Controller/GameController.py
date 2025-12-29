@@ -83,7 +83,7 @@ class GameController:
             if move == 1:
                 #get bee mobility to put in valid spot
                 r,c = self.view.window.waitForClick()
-                self.gm.moveObject(bee, c, r)
+                self.gm.moveObject(bee, r, c)
                 self.gm.cleanGrid()
 
                 self.view.clearCanva()

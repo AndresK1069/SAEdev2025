@@ -13,6 +13,7 @@ class GameView:
         self.grid = grid
 
     def render(self):
+        self.grid.render()
         self.window.renderMatrix(self.background)
         self.window.drawCell()
         self.window.renderMatrix(self.grid)

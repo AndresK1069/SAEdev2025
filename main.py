@@ -11,6 +11,7 @@ from data.constante import MAX_NECTAR, NECTAR_INITIAL, NFLEURS, WINDOW_TITLE, NC
 from gui.Window import Window
 
 
+
 W = Wall("W")
 G = Wall("G")
 
@@ -49,7 +50,9 @@ gm.spawnFlower(F,NFLEURS)
 window = Window(SIZE, WINDOW_TITLE, NCASES)
 view = GameView(window, background, gm)
 view.render()
-
+moves=[]
+isup=False
+window.track_mouse(gm,moves,isup)
 
 
 controller = GameController(gm, HIVES, hive_coords, view, TIME_OUT)

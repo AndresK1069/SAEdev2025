@@ -3,15 +3,41 @@ from PIL import Image, ImageOps
 class Texture:
     def __init__(self, filepath: str):
         self.filepath = filepath
+        self.image = Image.open(filepath)
 
     def resize(self, cellSize: int):
-        image = Image.open(self.filepath)
-        return image.resize((cellSize, cellSize))
+        self.image = self.image.resize((cellSize, cellSize))
+        return self
 
-    def getGrayScale(self, image: Image.Image):
-        return image.convert('L')
+    def getGrayScale(self):
+        if self.image.mode == "RGBA":
+            r, g, b, a = self.image.split()
+            gray = Image.merge("RGB", (r, g, b)).convert("L")
+            self.image = Image.merge("RGBA", (gray, gray, gray, a))
+        else:
+            gray = self.image.convert("L")
+            self.image = Image.merge("RGB", (gray, gray, gray))
+        return self
 
-    def colorize(self, image: Image.Image, black_color: str = "black", white_color: str = "white"):
-        if image.mode != 'L':
-            image = image.convert('L')
-        return ImageOps.colorize(image, black=black_color, white=white_color)
+    def getColorize(self, black_color="black", white_color="white", color_opacity=1.0):
+        """
+        color_opacity: float between 0.0 and 1.0
+            0.0 = no colorization
+            1.0 = full colorization
+        """
+        if self.image.mode != "RGBA":
+            self.image = self.image.convert("RGBA")
+        original = self.image
+        r, g, b, a = original.split()
+        gray = Image.merge("RGB", (r, g, b)).convert("L")
+        colored = ImageOps.colorize(
+            gray,
+            black=black_color,
+            white=white_color
+        ).convert("RGBA")
+        colored.putalpha(a)
+        self.image = Image.blend(original, colored, color_opacity)
+        return self.image
+
+    def getImage(self):
+        return self.image
