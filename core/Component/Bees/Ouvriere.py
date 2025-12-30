@@ -13,4 +13,5 @@ class Ouvriere(Bee):
         moveList = []
         isStun=False
         currenthealth= beeHealth
-        super().__init__(beeHealth, maxNectar, beeAgility, beeStrength, displayObject, simpleMovement, currentNectar,stunCounter, moveList,isStun,currenthealth)
+        owner = None
+        super().__init__(beeHealth, maxNectar, beeAgility, beeStrength, displayObject, simpleMovement, currentNectar,stunCounter, moveList, isStun, currenthealth, owner)

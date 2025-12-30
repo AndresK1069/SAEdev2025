@@ -18,7 +18,7 @@ class GameView:
         self.window.drawCell()
         self.window.renderMatrix(self.grid)
 
-    def clearCanva(self):
+    def clearCanva(self)->None:
         self.window.canvaClear()
 
 
@@ -31,10 +31,10 @@ class GameView:
         print("2. Bouger une abeille")
         print("3. Passer le tour")
 
-    def ask_choice(self):
+    def ask_choice(self, hive:Hive):
         choice = simpledialog.askinteger(
             "Action",
-            f"choisissez une action :\n1: Pondre\n2: Bouger\n3: Passer le tour",
+            f"Joueur : {hive.owner.playerName}\nNectar Actuelle : {hive.currentNectar}\n \nchoisissez une action :\n1: Pondre\n2: Bouger\n3: Passer le tour",
             minvalue=1,
             maxvalue=3
         )

@@ -259,9 +259,10 @@ class GridManager():
                                     continue
 
                                 if isinstance(neighbor, Bee):
-                                    #TODO ADD PROPER BATTLE
-                                    print(f"found escarmouche between ({r},{c}) and ({nr},{nc})")
-                                    neighbor.beeHealth -= bee.beeStrength
+                                    if self.data[r][c].owner != neighbor.owner:
+                                        #TODO ADD PROPER BATTLE
+                                        print(f"found escarmouche between ({r},{c}) and ({nr},{nc})")
+                                        neighbor.beeHealth -= bee.beeStrength
 
     def checkBeeHealth(self) -> None:
         from core.Component.Bee import Bee

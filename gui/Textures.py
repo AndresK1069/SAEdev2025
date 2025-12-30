@@ -26,7 +26,7 @@ class Texture:
             1.0 = full colorization
         """
         if self.image.mode != "RGBA":
-            self.image = self.image.convert("RGBA")
+            raise Exception("Image must be a grayscale image")
         original = self.image
         r, g, b, a = original.split()
         gray = Image.merge("RGB", (r, g, b)).convert("L")

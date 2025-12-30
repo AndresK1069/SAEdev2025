@@ -3,6 +3,7 @@ from tkinter.ttk import Label
 
 from PIL import ImageTk
 
+
 from core.GridManager import GridManager
 
 from core.Component.Wall import Wall
@@ -46,15 +47,16 @@ class Window:
         dicSprite = {
             Wall:Texture("assets/wall.png").resize(self.cellSize),
             Grass:Texture("assets/grass.png").resize(self.cellSize),
-            Bourdon:Texture("assets/bourdon.png").resize(self.cellSize),
-            Eclaireuse:Texture("assets/eclaireuse.png").resize(self.cellSize),
-            Ouvriere: Texture("assets/ouvriere.png").resize(self.cellSize),
+            Bourdon:Texture("assets/bourdon.png").resize(self.cellSize).getGrayScale(),
+            Eclaireuse:Texture("assets/eclaireuse.png").resize(self.cellSize).getGrayScale(),
+            Ouvriere: Texture("assets/ouvriere.png").resize(self.cellSize).getGrayScale(),
             Hive:Texture("assets/hive.png").resize(self.cellSize).getGrayScale(),
             Flower:Texture("assets/flower.png").resize(self.cellSize)
         }
         return dicSprite.get(type(cell))
 
     def renderMatrix(self, matrix: GridManager) -> None:
+        from core.Component.Bee import Bee
         #FIXME handle stun bees
         if not hasattr(self.canvas, "images"):
             self.canvas.images = []
@@ -73,7 +75,7 @@ class Window:
                     offset = 0
                     for obj in cell:
                         sprite = self.getSprite(obj)
-                        if isinstance(obj, Hive):
+                        if isinstance(obj, Hive) or isinstance(obj, Bee):
                             color_1 = obj.owner.primaryColor
                             color_2 =obj.owner.secondaryColor
                             sprite.getColorize(color_1, color_2,0.5)
@@ -93,7 +95,7 @@ class Window:
 
                 # Single object
                 sprite = self.getSprite(cell)
-                if isinstance(cell, Hive):
+                if isinstance(cell, Hive) or isinstance(cell, Bee):
                     color_1 = cell.owner.primaryColor
                     color_2 = cell.owner.secondaryColor
                     sprite.getColorize(color_1, color_2, 0.5)
@@ -162,17 +164,18 @@ class Window:
             f =f"Nectar actuelle : {cell.flowerNectar}"
             return f
         if isinstance(cell , Hive):
-            f=f"Propriétaire : {cell.owner.playerName}\nNectar actuelle : {cell.currentNectar}"
+            f=f"Propriétaire : {cell.owner.playerName}"
             return f
         if isinstance(cell , Eclaireuse):
-            f = f"Abeillie : Eclaireuse\nVie : {cell.currenthealth}/{cell.beeHealth}\nForce : {cell.beeStrength}\nNectar actuelle : {cell.currentNectar}/{cell.maxNectar}\nTours Restants(si Escarmouche) : {cell.stunCounter}"
+            f = f"Abeillie : Eclaireuse\nPropriétaire : {cell.owner.playerName}\nVie : {cell.currenthealth}/{cell.beeHealth}\nForce : {cell.beeStrength}\nNectar actuelle : {cell.currentNectar}/{cell.maxNectar}\nTours Restants(si Escarmouche) : {cell.stunCounter}"
             return f
         if isinstance(cell, Ouvriere):
-            f = f"Abeillie : Ouvriere\nVie : {cell.currenthealth}/{cell.beeHealth}\nForce : {cell.beeStrength}\nNectar actuelle : {cell.currentNectar}/{cell.maxNectar}\nTours Restants(si Escarmouche) : {cell.stunCounter}"
+            f = f"Abeillie : Ouvriere\nPropriétaire : {cell.owner.playerName}\nVie : {cell.currenthealth}/{cell.beeHealth}\nForce : {cell.beeStrength}\nNectar actuelle : {cell.currentNectar}/{cell.maxNectar}\nTours Restants(si Escarmouche) : {cell.stunCounter}"
             return f
         if isinstance(cell, Bourdon):
-            f = f"Abeillie : Bourdon\nVie : {cell.currenthealth}/{cell.beeHealth}\nForce : {cell.beeStrength}\nNectar actuelle : {cell.currentNectar}/{cell.maxNectar}\nTours Restants(si Escarmouche) : {cell.stunCounter}"
+            f = f"Abeillie : Bourdon\nPropriétaire : {cell.owner.playerName}\nVie : {cell.currenthealth}/{cell.beeHealth}\nForce : {cell.beeStrength}\nNectar actuelle : {cell.currentNectar}/{cell.maxNectar}\nTours Restants(si Escarmouche) : {cell.stunCounter}"
             return f
+
 
     def run(self):
         self.window.mainloop()

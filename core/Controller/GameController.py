@@ -27,7 +27,7 @@ class GameController:
         self.view.render()
         self.view.show_player(hive)
         self.view.show_menu()
-        choice = self.view.ask_choice()
+        choice = self.view.ask_choice(hive)
 
         if choice == 1:
             self.spawn_bee(hive)
@@ -42,7 +42,7 @@ class GameController:
         row, col = self.hive_coords[index]
         if not isinstance(self.gm.data[row][col], list):
             if hive.currentNectar < COUT_PONTE :
-                return
+                return self.move_bees(hive)
 
             bee_type = simpledialog.askstring(
                 f"{hive.owner.playerName} Spawn Bee",
@@ -57,6 +57,7 @@ class GameController:
             if len(self.gm.data[row][col]) == 1:
                 hive.currentNectar -= COUT_PONTE
                 bee = hive.spawnBee(bee_type)
+                bee.owner = hive.owner
                 self.gm.data[row][col].append(bee)
 
                 self.view.clearCanva()
@@ -78,7 +79,7 @@ class GameController:
             f"Bouger {bee}? (1 oui / 0 non)",
             minvalue=0,
             maxvalue=1
-        )
+            )
 
             if move == 1:
                 #get bee mobility to put in valid spot
