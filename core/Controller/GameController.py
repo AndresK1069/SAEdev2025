@@ -69,7 +69,7 @@ class GameController:
 
 
     def move_bees(self, hive):
-        for bee in hive.beeList:
+        for bee in reversed(hive.beeList):
             if bee.isStun:
                 bee.stunCounter -= 1
                 continue
