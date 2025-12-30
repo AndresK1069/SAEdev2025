@@ -259,7 +259,7 @@ class GridManager():
                                     continue
 
                                 if isinstance(neighbor, Bee):
-                                    if self.data[r][c].owner != neighbor.owner:
+                                    if bee.owner != neighbor.owner:
                                         #TODO ADD PROPER BATTLE
                                         print(f"found escarmouche between ({r},{c}) and ({nr},{nc})")
                                         neighbor.beeHealth -= bee.beeStrength
