@@ -31,6 +31,17 @@ class Window:
         self.window.title(self.title)
 
         self.canvas = tk.Canvas(self.window, width=self.size, height=self.size)
+        #preloade the assets
+        self.sprite_cache = {
+            Wall: Texture("assets/wall.png").resize(self.cellSize),
+            Grass: Texture("assets/grass.png").resize(self.cellSize),
+            Bourdon: Texture("assets/bourdon.png").resize(self.cellSize).getGrayScale(),
+            Eclaireuse: Texture("assets/eclaireuse.png").resize(self.cellSize).getGrayScale(),
+            Ouvriere: Texture("assets/ouvriere.png").resize(self.cellSize).getGrayScale(),
+            Hive: Texture("assets/hive.png").resize(self.cellSize).getGrayScale(),
+            Flower: Texture("assets/flower.png").resize(self.cellSize),
+        }
+
         self.canvas.pack()
 
     def drawCell(self):
@@ -38,22 +49,8 @@ class Window:
             self.canvas.create_line(i, 0, i, self.size, fill="black")
             self.canvas.create_line(0, i, self.size, i, fill="black")
 
-
-    def getSprite(self , cell):
-
-        if cell is None:
-            return None
-
-        dicSprite = {
-            Wall:Texture("assets/wall.png").resize(self.cellSize),
-            Grass:Texture("assets/grass.png").resize(self.cellSize),
-            Bourdon:Texture("assets/bourdon.png").resize(self.cellSize).getGrayScale(),
-            Eclaireuse:Texture("assets/eclaireuse.png").resize(self.cellSize).getGrayScale(),
-            Ouvriere: Texture("assets/ouvriere.png").resize(self.cellSize).getGrayScale(),
-            Hive:Texture("assets/hive.png").resize(self.cellSize).getGrayScale(),
-            Flower:Texture("assets/flower.png").resize(self.cellSize)
-        }
-        return dicSprite.get(type(cell))
+    def getSprite(self, cell):
+        return self.sprite_cache.get(type(cell))
 
     def renderMatrix(self, matrix: GridManager) -> None:
         from core.Component.Bee import Bee
