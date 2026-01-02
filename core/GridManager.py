@@ -236,6 +236,7 @@ class GridManager():
                         cell = self.data[nr][nc]
                         if isinstance(cell, Bee):
                             nectarStock = cell.currentNectar
+                            print(type(self.data[r][c]))
                             self.data[r][c].currentNectar += nectarStock
                             cell.currentNectar = 0
 

@@ -13,7 +13,7 @@ from core.Component.Hive import Hive
 from core.Component.Flower import Flower
 from data.constante import NCASES
 from gui.Textures import Texture
-
+import copy
 
 class Window:
 
@@ -41,6 +41,7 @@ class Window:
             Hive: Texture("assets/hive.png").resize(self.cellSize).getGrayScale(),
             Flower: Texture("assets/flower.png").resize(self.cellSize),
         }
+        self.photo_cache = {}
 
         self.canvas.pack()
 
@@ -49,12 +50,17 @@ class Window:
             self.canvas.create_line(i, 0, i, self.size, fill="black")
             self.canvas.create_line(0, i, self.size, i, fill="black")
 
+
+
     def getSprite(self, cell):
-        return self.sprite_cache.get(type(cell))
+        original_sprite = self.sprite_cache.get(type(cell))
+        if original_sprite is None:
+            return None
+        return copy.deepcopy(original_sprite)
 
     def renderMatrix(self, matrix: GridManager) -> None:
         from core.Component.Bee import Bee
-        #FIXME handle stun bees
+
         if not hasattr(self.canvas, "images"):
             self.canvas.images = []
 
@@ -67,45 +73,35 @@ class Window:
                 x_pixel = c * self.cellSize
                 y_pixel = r * self.cellSize
 
-                # Multiple objects in one cell
-                if isinstance(cell, list):
-                    offset = 0
-                    for obj in cell:
-                        sprite = self.getSprite(obj)
-                        if isinstance(obj, Hive) or isinstance(obj, Bee):
-                            color_1 = obj.owner.primaryColor
-                            color_2 =obj.owner.secondaryColor
-                            sprite.getColorize(color_1, color_2,0.5)
+                objects = cell if isinstance(cell, list) else [cell]
+                offset = 0
 
-                        if sprite is None:
-                            continue
-                        img = ImageTk.PhotoImage(sprite.image)
-                        self.canvas.images.append(img)
-                        self.canvas.create_image(
-                            x_pixel + offset,
-                            y_pixel + offset,
-                            image=img,
-                            anchor="nw"
-                        )
-                        offset += 5
-                    continue
+                for obj in objects:
+                    sprite = self.getSprite(obj)
+                    if sprite is None:
+                        continue
 
-                # Single object
-                sprite = self.getSprite(cell)
-                if isinstance(cell, Hive) or isinstance(cell, Bee):
-                    color_1 = cell.owner.primaryColor
-                    color_2 = cell.owner.secondaryColor
-                    sprite.getColorize(color_1, color_2, 0.5)
-                if sprite is None:
-                    continue
-                img = ImageTk.PhotoImage(sprite.image)
-                self.canvas.images.append(img)
-                self.canvas.create_image(
-                    x_pixel,
-                    y_pixel,
-                    image=img,
-                    anchor="nw"
-                )
+                    if isinstance(obj, (Hive, Bee)):
+                        color_1 = obj.owner.primaryColor
+                        color_2 = obj.owner.secondaryColor
+                        sprite.getColorize(color_1, color_2, 0.5)
+                        cache_key = (type(obj), color_1, color_2)
+                    else:
+                        cache_key = type(obj)
+
+
+                    if cache_key not in self.photo_cache:
+                        self.photo_cache[cache_key] = ImageTk.PhotoImage(sprite.image)
+
+                    img = self.photo_cache[cache_key]
+                    self.canvas.images.append(img)
+                    self.canvas.create_image(
+                        x_pixel + offset,
+                        y_pixel + offset,
+                        image=img,
+                        anchor="nw"
+                    )
+                    offset += 5
 
     def track_mouse(self, matrix: GridManager, lastLoc: list, isUp: bool):
         x = self.window.winfo_pointerx() - self.window.winfo_rootx()
@@ -140,6 +136,7 @@ class Window:
 
     def canvaClear(self):
         self.canvas.delete("all")
+        self.canvas.images.clear()
 
     def waitForClick(self):
         self._click_var = tk.IntVar()
