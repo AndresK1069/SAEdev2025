@@ -69,6 +69,17 @@ class GameController:
 
 
     def move_bees(self, hive):
+        if len(hive.beeList) == 0:
+            noBeeSpawn = simpledialog.askinteger(
+                f"{hive.owner.playerName}Action",
+                f"Vous n'avez pas D'abeille actuellement voulez vous en pondre une ? (1 oui / 0 non)",
+                minvalue=0,
+                maxvalue=1
+            )
+            if noBeeSpawn == 1:
+                return self.spawn_bee(hive)
+            else:
+                return
         for bee in reversed(hive.beeList):
             if bee.isStun:
                 bee.stunCounter -= 1

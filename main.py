@@ -1,11 +1,9 @@
-from core.Component.Flower import Flower
 from core.Component.Grass import Grass
 from core.Component.Hive import Hive
 from core.Component.Wall import Wall
 from core.Controller.GameController import GameController
 from core.GridManager import GridManager
 from core.Player import Player
-from core.utilities import evenSplit
 from core.view.GameView import GameView
 from data.constante import MAX_NECTAR, NECTAR_INITIAL, NFLEURS, WINDOW_TITLE, NCASES, SIZE, TIME_OUT
 from gui.Window import Window
@@ -36,15 +34,13 @@ H4 = Hive("h4",p4,[],MAX_NECTAR,NECTAR_INITIAL,[])
 
 HIVES = [H1,H2,H3,H4]
 
-F = Flower("f", evenSplit(NFLEURS,MAX_NECTAR))
-
 G= Grass("G")
 background = GridManager(NCASES)
 background.getBattleZone(G)
 
 gm = GridManager(NCASES)
 tmp, hive_coords = gm.addObject(W, H1, H2, H3, H4)
-gm.spawnFlower(F,NFLEURS)
+gm.spawnFlower(NFLEURS)
 
 
 window = Window(SIZE, WINDOW_TITLE, NCASES)

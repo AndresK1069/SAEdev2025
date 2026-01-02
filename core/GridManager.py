@@ -2,7 +2,9 @@ from core.Component.Wall import Wall
 from core.Component.Hive import Hive
 from core.Component.Flower import Flower
 from random import randint
-from data.constante import MAX_NECTAR
+
+from core.utilities import evenSplit
+from data.constante import MAX_NECTAR, NFLEURS
 import copy
 
 
@@ -45,7 +47,7 @@ class GridManager():
 
         return self.data , coord_hive
 
-    def spawnFlower(self, flower: Flower, numberFlower: int) -> list[list]:
+    def spawnFlower(self, numberFlower: int) -> list[list]:
         rows = len(self.data)
         cols = len(self.data[0])
 
@@ -72,13 +74,13 @@ class GridManager():
         for _ in range(numberFlower //2):
             i = randint(0, len(possible_cells)-1)
             flower_row , flower_col = possible_cells.pop(i)
-            self.data[flower_row][flower_col] = flower
+            self.data[flower_row][flower_col] = Flower("f",evenSplit(NFLEURS,MAX_NECTAR))
 
             mirrored_row = 2 * middle_line - flower_row
-            self.data[mirrored_row][flower_col] = flower
+            self.data[mirrored_row][flower_col] = Flower("f",evenSplit(NFLEURS,MAX_NECTAR))
             mirrored_col = 2 * middle_line - flower_col
-            self.data[flower_row][mirrored_col] = flower
-            self.data[mirrored_row][mirrored_col] = flower
+            self.data[flower_row][mirrored_col] = Flower("f",evenSplit(NFLEURS,MAX_NECTAR))
+            self.data[mirrored_row][mirrored_col] = Flower("f",evenSplit(NFLEURS,MAX_NECTAR))
 
             #print(middle_line-flower_row)
 
@@ -195,21 +197,19 @@ class GridManager():
     def flowerButinage(self, arrFlower:list) -> None:
         from core.Component.Bee import Bee
         for f in arrFlower:
-            r,c = f
-            reel_row , reel_col = f
-            r-=1
-            c-=1
-            for col in range(3):
-                for row in range(3):
-                    if isinstance(self.data[r+row][c+col], Bee):
-                        move1, move2 = self.data[r+row][c+col].moveList[-2:]
+            r, c = f
+            reel_row, reel_col = r, c
+            r -= 1
+            c -= 1
+            for row in range(3):
+                for col in range(3):
+                    obj = self.data[r + row][c + col]
+                    if isinstance(obj, Bee):
+                        move1, move2 = obj.moveList[-2:]
                         if move1 == move2:
-                            #print(self.data[reel_row][reel_col].flowerNectar)
                             varNectar = self.data[reel_row][reel_col].reduceNectar()
-                            self.data[r+row][c+col].currentNectar += varNectar
-                            self.data[r + row][c + col].checkOverFlow()
-
-
+                            obj.currentNectar += varNectar
+                            obj.checkOverFlow()
 
     def getBeePos(self) -> None:
         from core.Component.Bee import Bee
@@ -225,13 +225,10 @@ class GridManager():
 
         for f in arrayhive:
             r, c = f  # coordonnées de la hive
-            # row_ et col_ inutiles ici
             for col_offset in range(3):
                 for row_offset in range(3):
                     nr = r + row_offset
                     nc = c + col_offset
-
-                    # sécurité sur les limites de la grille
                     if 0 <= nr < len(self.data) and 0 <= nc < len(self.data[0]):
                         cell = self.data[nr][nc]
                         if isinstance(cell, Bee):

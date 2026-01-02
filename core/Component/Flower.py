@@ -7,6 +7,9 @@ class Flower:
 
     def reduceNectar(self) -> int:
         ratio = self.flowerNectar / MAX_NECTAR
+        if self.flowerNectar == 0:
+            return 0
+
         if ratio >= 2 / 3:
             self.flowerNectar -=3
             return 3
