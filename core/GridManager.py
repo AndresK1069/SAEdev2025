@@ -146,6 +146,7 @@ class GridManager():
                 raise Exception("Move exceeds agility")
 
         else:
+            #fixme queen like move
             if max(row_diff, col_diff) > bee.beeAgility:
                 raise Exception("Move exceeds agility")
 
@@ -205,6 +206,8 @@ class GridManager():
                 for col in range(3):
                     obj = self.data[r + row][c + col]
                     if isinstance(obj, Bee):
+                        if len(obj.moveList) == 1:
+                            continue
                         move1, move2 = obj.moveList[-2:]
                         if move1 == move2:
                             varNectar = self.data[reel_row][reel_col].reduceNectar()
@@ -235,7 +238,10 @@ class GridManager():
                         if isinstance(cell, Bee):
                             nectarStock = cell.currentNectar
                             print(type(self.data[r][c]))
+                            print(self.data[r][c].currentNectar)
                             self.data[r][c].currentNectar += nectarStock
+                            print(self.data[r][c].currentNectar)
+                            self.data[r][c].addNectar(5)#todo fix nectar display sync issue
                             cell.currentNectar = 0
 
     def checkEscarmouche(self) -> None:
