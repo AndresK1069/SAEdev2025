@@ -221,6 +221,7 @@ class GridManager():
                     self.data[r][c].moveList.append((r,c))
 
     def emptyBeeNectar(self, arrayhive: list) -> None:
+        #fixme check if works
         from core.Component.Bee import Bee
 
         for f in arrayhive:
@@ -258,24 +259,30 @@ class GridManager():
 
                                 if isinstance(neighbor, Bee):
                                     if bee.owner != neighbor.owner:
-                                        #TODO ADD PROPER BATTLE
-                                        print(f"found escarmouche between ({r},{c}) and ({nr},{nc})")
-                                        neighbor.beeHealth -= bee.beeStrength
+                                        if not neighbor.isStun:
+                                            #TODO ADD PROPER BATTLE
+                                            print(f"found escarmouche between ({r},{c}) and ({nr},{nc})")
+                                            neighbor.currenthealth -= bee.beeStrength
+                                            if neighbor.currenthealth <= 0:
+                                                neighbor.stun()
 
-    def checkBeeHealth(self) -> None:
+    def checkStunBee(self) -> None:
         from core.Component.Bee import Bee
         rows = len(self.data)
         cols = len(self.data[0])
         for r in range(rows):
             for c in range(cols):
-                if isinstance(self.data[r][c], Bee):
-                    if self.data[r][c].beeHealth <= 0:
-                        self.data[r][c].stun()
-                if isinstance(self.data[r][c], Bee) and self.data[r][c].isStun:
-                    self.data[r][c].stunCounter-=1
-                if isinstance(self.data[r][c], Bee) and self.data[r][c].isStun:
-                    if self.data[r][c].stunCounter <= 0:
-                        self.data[r][c].isStun = False
+                cell = self.data[r][c]
+                if isinstance(cell, Bee) and cell.isStun:
+                    print("Current count:", cell.stunCounter)
+                    if cell.stunCounter <= 0:
+                        cell.isStun = False
+                        continue
+                    print("Before:", cell.stunCounter)
+                    cell.stunCounter -= 1
+                    print("After:", cell.stunCounter)
+
+
 
     def getFlowerNectar(self) -> int:
         nectar = 0

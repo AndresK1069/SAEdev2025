@@ -82,7 +82,6 @@ class GameController:
                 return
         for bee in reversed(hive.beeList):
             if bee.isStun:
-                bee.stunCounter -= 1
                 continue
 
             move  = simpledialog.askinteger(
@@ -102,12 +101,13 @@ class GameController:
                 self.view.render()
 
     def end_round(self):
+        self.gm.checkStunBee()
         arr_f = self.gm.recupFleur()
         self.gm.getBeePos()
         self.gm.flowerButinage(arr_f)
         self.gm.emptyBeeNectar(self.hive_coords)
         self.gm.checkEscarmouche()
-        self.gm.checkBeeHealth()
+
 
     def check_end(self):
         is_winner, r, c = self.gm.isWinner(self.hive_coords)

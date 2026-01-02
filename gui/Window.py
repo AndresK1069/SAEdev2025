@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter.ttk import Label
+from xxsubtype import bench
 
 from PIL import ImageTk
 
@@ -40,6 +41,8 @@ class Window:
             Ouvriere: Texture("assets/ouvriere.png").resize(self.cellSize).getGrayScale(),
             Hive: Texture("assets/hive.png").resize(self.cellSize).getGrayScale(),
             Flower: Texture("assets/flower.png").resize(self.cellSize),
+            "Cursor": Texture("assets/cursor.png").resize(self.cellSize),
+            "Stun": Texture("assets/stun.png").resize(self.cellSize).getGrayScale(),
         }
         self.photo_cache = {}
 
@@ -50,10 +53,11 @@ class Window:
             self.canvas.create_line(i, 0, i, self.size, fill="black")
             self.canvas.create_line(0, i, self.size, i, fill="black")
 
+    def getSprite(self, key):
+        if key in self.sprite_cache:
+            return copy.deepcopy(self.sprite_cache[key])
 
-
-    def getSprite(self, cell):
-        original_sprite = self.sprite_cache.get(type(cell))
+        original_sprite = self.sprite_cache.get(type(key))
         if original_sprite is None:
             return None
         return copy.deepcopy(original_sprite)
@@ -77,22 +81,23 @@ class Window:
                 offset = 0
 
                 for obj in objects:
+
                     sprite = self.getSprite(obj)
                     if sprite is None:
                         continue
 
-                    if isinstance(obj, (Hive, Bee)):
+                    if isinstance(obj, (Hive, Bee)) and not (isinstance(obj, Bee) and obj.isStun):
                         color_1 = obj.owner.primaryColor
                         color_2 = obj.owner.secondaryColor
                         sprite.getColorize(color_1, color_2, 0.5)
                         cache_key = (type(obj), color_1, color_2)
+                    elif isinstance(obj, Bee) and obj.isStun:
+                        cache_key = f"BeeStun_{id(obj)}"
                     else:
                         cache_key = type(obj)
 
 
-                    if cache_key not in self.photo_cache:
-                        self.photo_cache[cache_key] = ImageTk.PhotoImage(sprite.image)
-
+                    self.photo_cache[cache_key] = ImageTk.PhotoImage(sprite.image)
                     img = self.photo_cache[cache_key]
                     self.canvas.images.append(img)
                     self.canvas.create_image(
@@ -101,6 +106,20 @@ class Window:
                         image=img,
                         anchor="nw"
                     )
+
+                    if isinstance(obj, Bee) and obj.isStun:
+                        stun_sprite = self.getSprite("Stun")
+                        stun_cache_key = f"Stun_{id(obj)}"
+                        self.photo_cache[stun_cache_key] = ImageTk.PhotoImage(stun_sprite.image)
+                        stun_img = self.photo_cache[stun_cache_key]
+                        self.canvas.images.append(stun_img)
+                        self.canvas.create_image(
+                            x_pixel + offset,
+                            y_pixel + offset,
+                            image=stun_img,
+                            anchor="nw"
+                        )
+
                     offset += 5
 
     def track_mouse(self, matrix: GridManager, lastLoc: list, isUp: bool):
@@ -154,20 +173,27 @@ class Window:
 
         return self._click_pos
     def getInfo(self,cell):
+        from core.Component.Bee import Bee
         if isinstance(cell, Flower):
             f =f"Nectar actuelle : {cell.flowerNectar}"
             return f
         if isinstance(cell , Hive):
             f=f"Propriétaire : {cell.owner.playerName}"
             return f
+
+        if isinstance(cell, Bee):
+            if cell.isStun:
+                f = f"Propriétaire : {cell.owner.playerName}\nTours Restants : {cell.stunCounter}"
+                return f
+
         if isinstance(cell , Eclaireuse):
-            f = f"Abeillie : Eclaireuse\nPropriétaire : {cell.owner.playerName}\nVie : {cell.currenthealth}/{cell.beeHealth}\nForce : {cell.beeStrength}\nNectar actuelle : {cell.currentNectar}/{cell.maxNectar}\nTours Restants(si Escarmouche) : {cell.stunCounter}"
+            f = f"Abeillie : Eclaireuse\nPropriétaire : {cell.owner.playerName}\nVie : {cell.currenthealth}/{cell.beeHealth}\nForce : {cell.beeStrength}\nNectar actuelle : {cell.currentNectar}/{cell.maxNectar}"
             return f
         if isinstance(cell, Ouvriere):
-            f = f"Abeillie : Ouvriere\nPropriétaire : {cell.owner.playerName}\nVie : {cell.currenthealth}/{cell.beeHealth}\nForce : {cell.beeStrength}\nNectar actuelle : {cell.currentNectar}/{cell.maxNectar}\nTours Restants(si Escarmouche) : {cell.stunCounter}"
+            f = f"Abeillie : Ouvriere\nPropriétaire : {cell.owner.playerName}\nVie : {cell.currenthealth}/{cell.beeHealth}\nForce : {cell.beeStrength}\nNectar actuelle : {cell.currentNectar}/{cell.maxNectar}"
             return f
         if isinstance(cell, Bourdon):
-            f = f"Abeillie : Bourdon\nPropriétaire : {cell.owner.playerName}\nVie : {cell.currenthealth}/{cell.beeHealth}\nForce : {cell.beeStrength}\nNectar actuelle : {cell.currentNectar}/{cell.maxNectar}\nTours Restants(si Escarmouche) : {cell.stunCounter}"
+            f = f"Abeillie : Bourdon\nPropriétaire : {cell.owner.playerName}\nVie : {cell.currenthealth}/{cell.beeHealth}\nForce : {cell.beeStrength}\nNectar actuelle : {cell.currentNectar}/{cell.maxNectar}"
             return f
 
 
