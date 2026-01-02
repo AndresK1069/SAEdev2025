@@ -224,7 +224,6 @@ class GridManager():
                     self.data[r][c].moveList.append((r,c))
 
     def emptyBeeNectar(self, arrayhive: list) -> None:
-        #fixme check if works
         from core.Component.Bee import Bee
 
         for f in arrayhive:
