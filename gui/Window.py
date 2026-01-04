@@ -187,13 +187,13 @@ class Window:
                 return f
 
         if isinstance(cell , Eclaireuse):
-            f = f"Abeillie : Eclaireuse\nPropriétaire : {cell.owner.playerName}\nVie : {cell.currenthealth}/{cell.beeHealth}\nForce : {cell.beeStrength}\nNectar actuelle : {cell.currentNectar}/{cell.maxNectar}"
+            f = f"Abeillie : Eclaireuse\nNom de L'abeille : {cell.name}\nPropriétaire : {cell.owner.playerName}\nVie : {cell.currenthealth}/{cell.beeHealth}\nForce : {cell.beeStrength}\nNectar actuelle : {cell.currentNectar}/{cell.maxNectar}"
             return f
         if isinstance(cell, Ouvriere):
-            f = f"Abeillie : Ouvriere\nPropriétaire : {cell.owner.playerName}\nVie : {cell.currenthealth}/{cell.beeHealth}\nForce : {cell.beeStrength}\nNectar actuelle : {cell.currentNectar}/{cell.maxNectar}"
+            f = f"Abeillie : Ouvriere\nNom de L'abeille : {cell.name}\nPropriétaire : {cell.owner.playerName}\nVie : {cell.currenthealth}/{cell.beeHealth}\nForce : {cell.beeStrength}\nNectar actuelle : {cell.currentNectar}/{cell.maxNectar}"
             return f
         if isinstance(cell, Bourdon):
-            f = f"Abeillie : Bourdon\nPropriétaire : {cell.owner.playerName}\nVie : {cell.currenthealth}/{cell.beeHealth}\nForce : {cell.beeStrength}\nNectar actuelle : {cell.currentNectar}/{cell.maxNectar}"
+            f = f"Abeillie : Bourdon\n Nom de L'abeille : {cell.name}\nPropriétaire : {cell.owner.playerName}\nVie : {cell.currenthealth}/{cell.beeHealth}\nForce : {cell.beeStrength}\nNectar actuelle : {cell.currentNectar}/{cell.maxNectar}"
             return f
 
 

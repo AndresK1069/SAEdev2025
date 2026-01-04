@@ -1,5 +1,7 @@
 from core.Component.Bee import Bee
 
+
+
 class Bourdon(Bee):
     def __init__(self):
         beeHealth = 5
@@ -14,4 +16,5 @@ class Bourdon(Bee):
         isStun = False
         currenthealth = beeHealth
         owner = None
-        super().__init__(beeHealth, maxNectar, beeAgility, beeStrength, displayObject, simpleMovement, currentNectar,stunCounter, moveList, isStun, currenthealth ,owner)
+        name= None
+        super().__init__(beeHealth, maxNectar, beeAgility, beeStrength, displayObject, simpleMovement, currentNectar,stunCounter, moveList, isStun, currenthealth ,owner,name)

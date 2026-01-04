@@ -4,7 +4,7 @@ from core.Component import Hive
 from data.constante import TIME_KO
 
 class Bee(object):
-    def __init__(self, beeHealth ,maxNectar : int , beeAgility : int , beeStrength : int , displayObject: str ,simpleMovement :bool, currentNectar: int , stunCounter :int , moveList : list , isStun : bool, currenthealth: int , owner):
+    def __init__(self, beeHealth ,maxNectar : int , beeAgility : int , beeStrength : int , displayObject: str ,simpleMovement :bool, currentNectar: int , stunCounter :int , moveList : list , isStun : bool, currenthealth: int , owner, name: str):
         self.beeHealth = beeHealth
         self.maxNectar = maxNectar
         self.beeAgility = beeAgility
@@ -17,6 +17,7 @@ class Bee(object):
         self.isStun = isStun
         self.currenthealth = currenthealth
         self.owner = owner
+        self.name = name
 
     def checkOverFlow(self) -> None:
         if self.currentNectar > self.maxNectar:

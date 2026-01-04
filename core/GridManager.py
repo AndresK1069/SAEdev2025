@@ -365,6 +365,15 @@ class GridManager():
         # TODO create safe zone
         pass
 
+    def getItemCoordonate(self, Item) -> tuple[int, int]:
+        rows = len(self.data)
+        cols = len(self.data[0])
+        for r in range(rows):
+            for c in range(cols):
+                if id(Item) == id(self.data[r][c]):
+                    return r, c
+                else:
+                    return None, None
 
 
 

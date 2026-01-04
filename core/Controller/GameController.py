@@ -1,6 +1,7 @@
 from tkinter import simpledialog
 
 from data.constante import COUT_PONTE, NCASES
+from core.utilities import randomName
 
 
 class GameController:
@@ -42,8 +43,7 @@ class GameController:
         row, col = self.hive_coords[index]
 
         if not isinstance(self.gm.data[row][col], list):
-            # Initialize cell only if empty (no Hive yet)
-            self.gm.data[row][col] = [hive]  # Keep the Hive in the grid
+            self.gm.data[row][col] = [hive]
 
         if hive.currentNectar < COUT_PONTE:
             return self.move_bees(hive)
@@ -57,8 +57,7 @@ class GameController:
         hive.reduceNectar(COUT_PONTE)
         bee = hive.spawnBee(bee_type)
         bee.owner = hive.owner
-
-        # Append bee to the existing Hive cell
+        bee.name = randomName()
         self.gm.data[row][col].append(bee)
 
         self.view.clearCanva()
@@ -84,7 +83,7 @@ class GameController:
 
             move  = simpledialog.askinteger(
             f"{hive.owner.playerName}Action",
-            f"Bouger {bee}? (1 oui / 0 non)",
+            f"Bouger {bee.name}? (1 oui / 0 non)",
             minvalue=0,
             maxvalue=1
             )

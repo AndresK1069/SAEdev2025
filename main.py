@@ -4,10 +4,10 @@ from core.Component.Wall import Wall
 from core.Controller.GameController import GameController
 from core.GridManager import GridManager
 from core.Player import Player
+from core.utilities import randomName
 from core.view.GameView import GameView
 from data.constante import MAX_NECTAR, NECTAR_INITIAL, NFLEURS, WINDOW_TITLE, NCASES, SIZE, TIME_OUT
 from gui.Window import Window
-
 
 
 W = Wall("W")
