@@ -123,32 +123,49 @@ class GridManager():
 
         return
 
-    def is_valid_cell(self, bee, r:int, c:int, nRow:int, nCol:int) -> bool:
+    def is_valid_cell(self, bee, r: int, c: int, nRow: int, nCol: int) -> bool:
         rows = len(self.data)
         cols = len(self.data[0])
 
+        # Check bounds
         if nRow < 0 or nRow >= rows or nCol < 0 or nCol >= cols:
             raise Exception("Target cell out of bounds")
 
-
+        # Check if target is empty
         if self.data[nRow][nCol] is not None:
             raise Exception("Target cell is not empty")
 
-        row_diff = abs(nRow - r)
-        col_diff = abs(nCol - c)
+        row_diff = nRow - r
+        col_diff = nCol - c
 
         if bee.simpleMovement:
-            if row_diff > 0 and col_diff > 0:
+            # Only horizontal or vertical moves
+            if row_diff != 0 and col_diff != 0:
                 raise Exception("Diagonal movement is not allowed")
 
-
-            if row_diff > bee.beeAgility or col_diff > bee.beeAgility:
+            if abs(row_diff) > bee.beeAgility or abs(col_diff) > bee.beeAgility:
                 raise Exception("Move exceeds agility")
 
         else:
-            #fixme queen like move
-            if max(row_diff, col_diff) > bee.beeAgility:
+            # Queen movement: horizontal, vertical, or diagonal
+            max_diff = max(abs(row_diff), abs(col_diff))
+            if max_diff > bee.beeAgility:
                 raise Exception("Move exceeds agility")
+
+            # Check move is straight line or diagonal
+            if row_diff != 0 and col_diff != 0 and abs(row_diff) != abs(col_diff):
+                raise Exception("Invalid move for queen-like bee (not straight or diagonal)")
+
+            # Optional: Check path is clear
+            step_row = 0 if row_diff == 0 else (1 if row_diff > 0 else -1)
+            step_col = 0 if col_diff == 0 else (1 if col_diff > 0 else -1)
+
+            current_r, current_c = r + step_row, c + step_col
+            while (current_r != nRow) or (current_c != nCol):
+                if self.data[current_r][current_c] is not None:
+                    raise Exception("Path is blocked")
+                current_r += step_row
+                current_c += step_col
 
         return True
 
