@@ -40,33 +40,31 @@ class GameController:
         from core.utilities import getBeeStats
         index = self.hives.index(hive)
         row, col = self.hive_coords[index]
+
         if not isinstance(self.gm.data[row][col], list):
-            if hive.currentNectar < COUT_PONTE :
-                return self.move_bees(hive)
+            # Initialize cell only if empty (no Hive yet)
+            self.gm.data[row][col] = [hive]  # Keep the Hive in the grid
 
-            bee_type = simpledialog.askstring(
-                f"{hive.owner.playerName} Spawn Bee",
-                "Nom de L'aibeille",
-            )
-            DummyObjectbeeData = getBeeStats(bee_type)
+        if hive.currentNectar < COUT_PONTE:
+            return self.move_bees(hive)
 
+        bee_type = simpledialog.askstring(
+            f"{hive.owner.playerName} Spawn Bee",
+            "Nom de L'abeille",
+        )
+        DummyObjectbeeData = getBeeStats(bee_type)
 
+        hive.reduceNectar(COUT_PONTE)
+        bee = hive.spawnBee(bee_type)
+        bee.owner = hive.owner
 
-            self.gm.data[row][col] = self.gm.cellToList(row, col)
+        # Append bee to the existing Hive cell
+        self.gm.data[row][col].append(bee)
 
-            if len(self.gm.data[row][col]) == 1:
-                hive.currentNectar -= COUT_PONTE
-                bee = hive.spawnBee(bee_type)
-                bee.owner = hive.owner
-                self.gm.data[row][col].append(bee)
-
-                self.view.clearCanva()
-                self.view.render()
-                del DummyObjectbeeData
-                self.move_bees(hive)
-        else:
-            self.move_bees(hive)
-
+        self.view.clearCanva()
+        self.view.render()
+        del DummyObjectbeeData
+        self.move_bees(hive)
 
     def move_bees(self, hive):
         if len(hive.beeList) == 0:

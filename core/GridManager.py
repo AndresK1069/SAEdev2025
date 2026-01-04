@@ -225,23 +225,19 @@ class GridManager():
 
     def emptyBeeNectar(self, arrayhive: list) -> None:
         from core.Component.Bee import Bee
-
-        for f in arrayhive:
-            r, c = f  # coordonnées de la hive
-            for col_offset in range(3):
-                for row_offset in range(3):
-                    nr = r + row_offset
-                    nc = c + col_offset
+        print(arrayhive)
+        for r, c in arrayhive:
+            hive = self.data[r][c]
+            for dr in (-1, 0, 1):
+                for dc in (-1, 0, 1):
+                    nr = r + dr
+                    nc = c + dc
                     if 0 <= nr < len(self.data) and 0 <= nc < len(self.data[0]):
                         cell = self.data[nr][nc]
-                        if isinstance(cell, Bee):
-                            nectarStock = cell.currentNectar
-                            print(type(self.data[r][c]))
-                            print(self.data[r][c].currentNectar)
-                            self.data[r][c].currentNectar += nectarStock
-                            print(self.data[r][c].currentNectar)
-                            self.data[r][c].addNectar(5)#todo fix nectar display sync issue
+                        if isinstance(cell, Bee) and cell.currentNectar > 0:
+                            hive.addNectar(cell.currentNectar)
                             cell.currentNectar = 0
+
 
     def checkEscarmouche(self) -> None:
         from core.Component.Bee import Bee

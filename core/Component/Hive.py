@@ -20,4 +20,10 @@ class Hive(object):
         self.beeList.append(bee)
         return bee
     def addNectar(self, x :int):
-        self.currentNectar = x
+        self.currentNectar += x
+
+    def reduceNectar(self, x :int):
+        self.currentNectar -= x
+
+    def getNectar(self):
+        return self.currentNectar

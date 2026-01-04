@@ -34,7 +34,7 @@ class GameView:
     def ask_choice(self, hive:Hive):
         choice = simpledialog.askinteger(
             "Action",
-            f"Joueur : {hive.owner.playerName}\nNectar Actuelle : {hive.currentNectar}\n \nchoisissez une action :\n1: Pondre\n2: Bouger\n3: Passer le tour",
+            f"Joueur : {hive.owner.playerName}\nNectar Actuelle : {hive.getNectar()}\n \nchoisissez une action :\n1: Pondre\n2: Bouger\n3: Passer le tour",
             minvalue=1,
             maxvalue=3
         )
