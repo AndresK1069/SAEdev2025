@@ -41,7 +41,7 @@ background.getBattleZone(G)
 gm = GridManager(NCASES)
 tmp, hive_coords = gm.addObject(W, H1, H2, H3, H4)
 gm.spawnFlower(NFLEURS)
-
+#todo Test end game conditions
 
 window = Window(SIZE, WINDOW_TITLE, NCASES)
 view = GameView(window, background, gm)
