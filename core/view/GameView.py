@@ -1,3 +1,4 @@
+import tkinter as tk
 from tkinter import simpledialog
 
 from core.Component.Hive import Hive
@@ -39,3 +40,31 @@ class GameView:
             maxvalue=3
         )
         return choice
+
+
+    def ask_choice2(self, hive):
+        popup = tk.Toplevel()
+        popup.title("Action")
+        popup.geometry("300x200")
+        popup.resizable(False, False)
+
+        selected_choice = {"value": None}
+
+        tk.Label(
+            popup,
+            text=f"Joueur : {hive.owner.playerName}\nNectar Actuelle : {hive.getNectar()}\n\nChoisissez une action :",
+            justify="left"
+        ).pack(pady=10)
+
+        def choose(val):
+            selected_choice["value"] = val
+            popup.destroy()
+
+        tk.Button(popup, text="1: Pondre", width=20, command=lambda: choose(1)).pack(pady=5)
+        tk.Button(popup, text="2: Bouger", width=20, command=lambda: choose(2)).pack(pady=5)
+        tk.Button(popup, text="3: Passer le tour", width=20, command=lambda: choose(3)).pack(pady=5)
+
+        popup.grab_set()
+        popup.wait_window()
+
+        return selected_choice["value"]

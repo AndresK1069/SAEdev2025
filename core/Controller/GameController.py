@@ -1,4 +1,4 @@
-from tkinter import simpledialog
+from tkinter import simpledialog, messagebox
 
 from data.constante import COUT_PONTE, NCASES
 from core.utilities import randomName
@@ -14,6 +14,7 @@ class GameController:
 
     def run(self):
         while self.time_out > 0:
+            print(self.time_out)
 
             if self.check_end():
                 return
@@ -25,10 +26,11 @@ class GameController:
             self.time_out -= 1
 
     def play_turn(self, hive):
+        self.view.clearCanva()
         self.view.render()
         self.view.show_player(hive)
         self.view.show_menu()
-        choice = self.view.ask_choice(hive)
+        choice = self.view.ask_choice2(hive)
 
         if choice == 1:
             self.spawn_bee(hive)
@@ -67,12 +69,14 @@ class GameController:
 
     def move_bees(self, hive):
         if len(hive.beeList) == 0:
-            noBeeSpawn = simpledialog.askinteger(
-                f"{hive.owner.playerName}Action",
-                f"Vous n'avez pas D'abeille actuellement voulez vous en pondre une ? (1 oui / 0 non)",
-                minvalue=0,
-                maxvalue=1
+
+            noBeeSpawn = messagebox.askyesno(
+                f"{hive.owner.playerName} Action",
+                "Vous n'avez pas d'abeille actuellement. Voulez-vous en pondre une ?"
             )
+
+            # Convert True/False to 1/0 if you need
+            noBeeSpawn_int = 1 if noBeeSpawn else 0
             if noBeeSpawn == 1:
                 return self.spawn_bee(hive)
             else:
@@ -81,12 +85,12 @@ class GameController:
             if bee.isStun:
                 continue
 
-            move  = simpledialog.askinteger(
-            f"{hive.owner.playerName}Action",
-            f"Bouger {bee.name}? (1 oui / 0 non)",
-            minvalue=0,
-            maxvalue=1
+            move = messagebox.askyesno(
+                f"{hive.owner.playerName} Action",
+                f"Bouger {bee.name}?"
             )
+
+            move = 1 if move else 0
 
             if move == 1:
                 #get bee mobility to put in valid spot

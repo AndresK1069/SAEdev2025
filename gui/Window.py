@@ -29,7 +29,7 @@ class Window:
         self.title = title
 
         self.window = tk.Tk()
-        self.window.title(self.title)
+
 
         self.canvas = tk.Canvas(self.window, width=self.size, height=self.size)
         #preloade the assets
@@ -195,7 +195,6 @@ class Window:
         if isinstance(cell, Bourdon):
             f = f"Abeillie : Bourdon\n Nom de L'abeille : {cell.name}\nPropriétaire : {cell.owner.playerName}\nVie : {cell.currenthealth}/{cell.beeHealth}\nForce : {cell.beeStrength}\nNectar actuelle : {cell.currentNectar}/{cell.maxNectar}"
             return f
-
 
     def run(self):
         self.window.mainloop()
