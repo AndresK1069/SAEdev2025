@@ -50,10 +50,8 @@ class GameController:
         if hive.currentNectar < COUT_PONTE:
             return self.move_bees(hive)
 
-        bee_type = simpledialog.askstring(
-            f"{hive.owner.playerName} Spawn Bee",
-            "Nom de L'abeille",
-        )
+        bee_type=self.view.choose_bee(hive)
+
         DummyObjectbeeData = getBeeStats(bee_type)
 
         hive.reduceNectar(COUT_PONTE)
@@ -69,11 +67,12 @@ class GameController:
 
     def move_bees(self, hive):
         if len(hive.beeList) == 0:
-
+            #fixme
             noBeeSpawn = messagebox.askyesno(
                 f"{hive.owner.playerName} Action",
                 "Vous n'avez pas d'abeille actuellement. Voulez-vous en pondre une ?"
             )
+
 
             # Convert True/False to 1/0 if you need
             noBeeSpawn_int = 1 if noBeeSpawn else 0
@@ -81,10 +80,13 @@ class GameController:
                 return self.spawn_bee(hive)
             else:
                 return
+
         for bee in reversed(hive.beeList):
             if bee.isStun:
                 continue
 
+
+            #fixme
             move = messagebox.askyesno(
                 f"{hive.owner.playerName} Action",
                 f"Bouger {bee.name}?"
@@ -97,7 +99,6 @@ class GameController:
                 r,c = self.view.window.waitForClick()
                 areaOwner = self.gm.getAreaOwner(self.hives, r, c)
                 if areaOwner == bee.owner or areaOwner is None:
-                    print(areaOwner)
                     self.gm.moveObject(bee, r, c)
                     self.gm.cleanGrid()
 

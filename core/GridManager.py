@@ -363,8 +363,8 @@ class GridManager():
         chunk = tmpSize//3
         zones = [
             ((0, chunk), (0, chunk)),
-            ((chunk * 2, tmpSize), (0, chunk)),
             ((0, chunk), (chunk * 2, tmpSize)),
+            ((chunk * 2, tmpSize), (0, chunk)),
             ((chunk * 2, tmpSize), (chunk * 2, tmpSize))
         ]
         for hive , zones in zip(hive_array, zones):

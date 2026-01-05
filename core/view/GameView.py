@@ -1,9 +1,9 @@
 import tkinter as tk
 from tkinter import simpledialog
-
 from core.Component.Hive import Hive
 from core.GridManager import GridManager
 from gui.Window import Window
+
 
 
 class GameView:
@@ -68,3 +68,41 @@ class GameView:
         popup.wait_window()
 
         return selected_choice["value"]
+
+    def choose_bee(self,hive):
+        bee_options = ["bourdon", "eclaireuse", "ouvriere"]
+
+        popup = tk.Toplevel()
+        popup.title(f"{hive.owner.playerName} Spawn Bee")
+        popup.geometry("250x200")
+        popup.resizable(False, False)
+
+        tk.Label(popup, text="Nom de l'abeille :", font=("Arial", 12)).pack(pady=5)
+
+
+        frame = tk.Frame(popup)
+        frame.pack(pady=5, padx=5, fill="both", expand=True)
+
+        scrollbar = tk.Scrollbar(frame, orient="vertical")
+        listbox = tk.Listbox(frame, yscrollcommand=scrollbar.set, selectmode=tk.SINGLE, height=6)
+        scrollbar.config(command=listbox.yview)
+        scrollbar.pack(side="right", fill="y")
+        listbox.pack(side="left", fill="both", expand=True)
+
+        for bee in bee_options:
+            listbox.insert(tk.END, bee)
+
+        selected_bee = {"value": None}
+
+        def confirm_selection():
+            selection = listbox.curselection()
+            if selection:
+                selected_bee["value"] = listbox.get(selection[0])
+                popup.destroy()
+
+        tk.Button(popup, text="OK", command=confirm_selection).pack(pady=5)
+
+        popup.grab_set()
+        popup.wait_window()
+
+        return selected_bee["value"]
