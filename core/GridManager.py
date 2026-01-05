@@ -142,30 +142,8 @@ class GridManager():
             # Only horizontal or vertical moves
             if row_diff != 0 and col_diff != 0:
                 raise Exception("Diagonal movement is not allowed")
-
-            if abs(row_diff) > bee.beeAgility or abs(col_diff) > bee.beeAgility:
-                raise Exception("Move exceeds agility")
-
-        else:
-            # Queen movement: horizontal, vertical, or diagonal
-            max_diff = max(abs(row_diff), abs(col_diff))
-            if max_diff > bee.beeAgility:
-                raise Exception("Move exceeds agility")
-
-            # Check move is straight line or diagonal
-            if row_diff != 0 and col_diff != 0 and abs(row_diff) != abs(col_diff):
-                raise Exception("Invalid move for queen-like bee (not straight or diagonal)")
-
-            # Optional: Check path is clear
-            step_row = 0 if row_diff == 0 else (1 if row_diff > 0 else -1)
-            step_col = 0 if col_diff == 0 else (1 if col_diff > 0 else -1)
-
-            current_r, current_c = r + step_row, c + step_col
-            while (current_r != nRow) or (current_c != nCol):
-                if self.data[current_r][current_c] is not None:
-                    raise Exception("Path is blocked")
-                current_r += step_row
-                current_c += step_col
+        if abs(row_diff) > bee.beeAgility or abs(col_diff) > bee.beeAgility:
+            raise Exception("Move exceeds agility")
 
         return True
 
@@ -279,7 +257,7 @@ class GridManager():
                                     if bee.owner != neighbor.owner:
                                         if not neighbor.isStun:
                                             #TODO ADD PROPER BATTLE
-                                            print(f"found escarmouche between ({r},{c}) and ({nr},{nc})")
+                                            print(f"found escarmouche between ({bee.name}) and ({neighbor.name})")
                                             neighbor.currenthealth -= bee.beeStrength
                                             if neighbor.currenthealth <= 0:
                                                 neighbor.stun()
@@ -378,11 +356,28 @@ class GridManager():
 
         return winning_hive_row, winning_hive_col
 
-    def setSafeZoner(self):
-        # TODO create safe zone
-        pass
+    def setSafeZone(self, hive_array:list) -> None:
+        if len(hive_array) != 4:
+            raise ValueError("Expected at least 4 hives")
+        tmpSize=self.size
+        chunk = tmpSize//3
+        zones = [
+            ((0, chunk), (0, chunk)),
+            ((chunk * 2, tmpSize), (0, chunk)),
+            ((0, chunk), (chunk * 2, tmpSize)),
+            ((chunk * 2, tmpSize), (chunk * 2, tmpSize))
+        ]
+        for hive , zones in zip(hive_array, zones):
+            hive.baseList.append( (hive.owner, zones) )
 
-    def getItemCoordonate(self, Item) -> tuple[int, int]:
+    def getAreaOwner(self, hive_list: list, r: int, c: int) -> str | None:
+        for hive in hive_list:
+            for owner, ((r1, r2), (c1, c2)) in hive.baseList:
+                if r1 <= r < r2 and c1 <= c < c2:
+                    return owner
+        return None
+
+    def getItemCoordonate(self, Item) -> tuple[int, int] | None:
         rows = len(self.data)
         cols = len(self.data[0])
         for r in range(rows):
@@ -390,7 +385,7 @@ class GridManager():
                 if id(Item) == id(self.data[r][c]):
                     return r, c
                 else:
-                    return None, None
+                    return None
 
 
 

@@ -91,11 +91,16 @@ class GameController:
             if move == 1:
                 #get bee mobility to put in valid spot
                 r,c = self.view.window.waitForClick()
-                self.gm.moveObject(bee, r, c)
-                self.gm.cleanGrid()
+                areaOwner = self.gm.getAreaOwner(self.hives, r, c)
+                if areaOwner == bee.owner or areaOwner is None:
+                    print(areaOwner)
+                    self.gm.moveObject(bee, r, c)
+                    self.gm.cleanGrid()
 
-                self.view.clearCanva()
-                self.view.render()
+                    self.view.clearCanva()
+                    self.view.render()
+                else:
+                    raise ValueError("It's not your zone")
 
     def end_round(self):
         self.gm.checkStunBee()
