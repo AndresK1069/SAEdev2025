@@ -5,7 +5,7 @@ def evenSplit(nfleur: int , maxNectar :int) -> int:
     return maxNectar//(nfleur*2)
 
 def getBeeStats(string:str):
-    string.lower()
+    string = string.lower()
     bee_class = BEE_TYPES[string]
     return bee_class()
 

@@ -1,7 +1,7 @@
 from core.Component.Wall import Wall
 from core.Component.Hive import Hive
 from core.Component.Flower import Flower
-from random import randint
+from random import randint, random
 
 from core.utilities import evenSplit
 from data.constante import MAX_NECTAR, NFLEURS
@@ -71,7 +71,7 @@ class GridManager():
         if numberFlower %2 != 0:
             raise Exception('numberFlower should be a multiple of 2')
 
-        for _ in range(numberFlower //2):
+        for _ in range(numberFlower):
             i = randint(0, len(possible_cells)-1)
             flower_row , flower_col = possible_cells.pop(i)
             self.data[flower_row][flower_col] = Flower("f",evenSplit(NFLEURS,MAX_NECTAR))
@@ -256,11 +256,86 @@ class GridManager():
                                 if isinstance(neighbor, Bee):
                                     if bee.owner != neighbor.owner:
                                         if not neighbor.isStun:
-                                            #TODO ADD PROPER BATTLE
+
                                             print(f"found escarmouche between ({bee.name}) and ({neighbor.name})")
-                                            neighbor.currenthealth -= bee.beeStrength
-                                            if neighbor.currenthealth <= 0:
-                                                neighbor.stun()
+                                            numEnemy =self.getBeeAround(r,c)
+                                            dodgeProba = self.calFE(r ,c , numEnemy)
+                                            FE = bee.beeStrength // numEnemy
+                                            didDamege = self.did_dodge(dodgeProba)
+                                            if not didDamege:
+                                                neighbor.currenthealth -= FE
+                                                if neighbor.currenthealth <= 0:
+                                                    neighbor.stun()
+
+    def did_dodge(self,dodgeProba: int) -> bool:
+        return random() < dodgeProba / 100
+
+    def getBeeAround(self, r, c) -> int:
+        from core.Component.Bee import Bee
+        """
+        Count the number of enemy Bee objects surrounding the cell at (r, c).
+        This method checks the 8 neighboring cells (including diagonals) around
+        the given position. Only Bee instances with a different owner than the
+        Bee at (r, c) are counted. If the cell at (r, c) does not contain a Bee,
+        the method returns 0.
+    
+        Parameters
+        ----------
+        r : int
+            Row index of the center cell.
+        c : int
+            Column index of the center cell.
+    
+        Returns
+        -------
+        int
+            The number of surrounding enemy Bees.
+        """
+        beeNum = 0
+
+        if not isinstance(self.data[r][c], Bee):
+            return 0
+
+        rows = len(self.data)
+        cols = len(self.data[0])
+        center_bee = self.data[r][c]
+
+        for dr in range(r - 1, r + 2):
+            for dc in range(c - 1, c + 2):
+                if dr < 0 or dr >= rows or dc < 0 or dc >= cols:
+                    continue
+                if dr == r and dc == c:
+                    continue
+
+                cell = self.data[dr][dc]
+                if isinstance(cell, Bee) and cell.owner != center_bee.owner:
+                    beeNum += 1
+
+        return beeNum
+
+    def calFE(self,r :int,c :int, beeNum:int)-> int:
+        from core.Component.Bee import Bee
+        sumBeeStrenght = 0
+
+        if not isinstance(self.data[r][c], Bee):
+            return 0
+
+        rows = len(self.data)
+        cols = len(self.data[0])
+        center_bee = self.data[r][c]
+
+        for dr in range(r - 1, r + 2):
+            for dc in range(c - 1, c + 2):
+                if dr < 0 or dr >= rows or dc < 0 or dc >= cols:
+                    continue
+                if dr == r and dc == c:
+                    continue
+
+                cell = self.data[dr][dc]
+                if isinstance(cell, Bee) and cell.owner != center_bee.owner:
+                    sumBeeStrenght+= cell.beeStrength
+        return sumBeeStrenght // beeNum
+
 
     def checkStunBee(self) -> None:
         from core.Component.Bee import Bee
@@ -376,17 +451,6 @@ class GridManager():
                 if r1 <= r < r2 and c1 <= c < c2:
                     return owner
         return None
-
-    def getItemCoordonate(self, Item) -> tuple[int, int] | None:
-        rows = len(self.data)
-        cols = len(self.data[0])
-        for r in range(rows):
-            for c in range(cols):
-                if id(Item) == id(self.data[r][c]):
-                    return r, c
-                else:
-                    return None
-
 
 
     def render(self)->None:
