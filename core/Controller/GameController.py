@@ -113,18 +113,20 @@ class GameController:
             move = 1 if move else 0
 
             if move == 1:
-                #get bee mobility to put in valid spot
-                r,c = self.view.window.waitForClick()
-                areaOwner = self.gm.getAreaOwner(self.hives, r, c)
-                if areaOwner == bee.owner or areaOwner is None:
-                    self.gm.moveObject(bee, r, c)
-                    self.gm.cleanGrid()
+                while True:
+                    try:
+                        r, c = self.view.window.waitForClick()
+                        areaOwner = self.gm.getAreaOwner(self.hives, r, c)
+                        if areaOwner != bee.owner and areaOwner is not None:
+                            raise ValueError("It's not your zone")
+                        self.gm.moveObject(bee, r, c)
 
-                    self.view.clearCanva()
-                    self.view.render()
-                else:
-                    raise ValueError("It's not your zone")
-
+                        self.gm.cleanGrid()
+                        self.view.clearCanva()
+                        self.view.render()
+                        break
+                    except Exception as e:
+                        print(f"Invalid move: {e}. Please try again.")
 
     def aiSpawnBee(self, hive ,beeType):
         index = self.hives.index(hive)

@@ -1,10 +1,8 @@
 from logging import raiseExceptions
-
 from core.Player import Player
 from core.utilities import randomName
 from data.constante import BEES_TYPE
 from random import randint
-
 
 class AiPlayer(Player):
 
@@ -22,12 +20,9 @@ class AiPlayer(Player):
         y = randint(1, 2)
         return y
 
-
-
     def getBee(self):
         beeIndex = randint(0, 2)
         return BEES_TYPE[beeIndex]
-
 
     def aiMoveBee(self, bee , r ,c ):
         from core.Component.Bee import Bee
