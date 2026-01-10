@@ -6,6 +6,9 @@ MAX_NECTAR = 50
 TIME_OUT = 250
 COUT_PONTE = 5
 TIME_KO = 5
+BEES_TYPE = ["Bourdon", "Eclaireuse", "Ouvriere"]
+
+
 
 #Window
 SIZE=600

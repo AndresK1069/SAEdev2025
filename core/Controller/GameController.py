@@ -1,4 +1,6 @@
+from random import choice
 from tkinter import simpledialog, messagebox
+from tkinter.colorchooser import Chooser
 
 from data.constante import COUT_PONTE, NCASES
 from core.utilities import randomName
@@ -20,10 +22,31 @@ class GameController:
                 return
 
             for hive in self.hives:
-                self.play_turn(hive)
+                if not hive.owner.isAI:
+                    self.play_turn(hive)
+                else:
+                    self.aiTurn(hive)
 
             self.end_round()
             self.time_out -= 1
+
+    def aiTurn(self, hive):
+        self.view.clearCanva()
+        self.view.render()
+        if hive.owner.isAI:
+            choice = hive.owner.shouldPlay(hive.currentNectar)
+            if hive.currentNectar < COUT_PONTE:
+                choice = 2
+
+            if choice == 1:
+                self.aiSpawnBee(hive,hive.owner.getBee())
+            if choice == 2:
+                #add move
+                pass
+
+            if choice == 3:
+                pass
+
 
     def play_turn(self, hive):
         self.view.clearCanva()
@@ -40,7 +63,6 @@ class GameController:
             pass
 
     def spawn_bee(self, hive):
-        from core.utilities import getBeeStats
         index = self.hives.index(hive)
         row, col = self.hive_coords[index]
 
@@ -52,8 +74,6 @@ class GameController:
 
         bee_type=self.view.choose_bee(hive)
 
-        DummyObjectbeeData = getBeeStats(bee_type)
-
         hive.reduceNectar(COUT_PONTE)
         bee = hive.spawnBee(bee_type)
         bee.owner = hive.owner
@@ -62,7 +82,6 @@ class GameController:
 
         self.view.clearCanva()
         self.view.render()
-        del DummyObjectbeeData
         self.move_bees(hive)
 
     def move_bees(self, hive):
@@ -106,6 +125,51 @@ class GameController:
                     self.view.render()
                 else:
                     raise ValueError("It's not your zone")
+
+
+    def aiSpawnBee(self, hive ,beeType):
+        index = self.hives.index(hive)
+        row, col = self.hive_coords[index]
+
+        if not isinstance(self.gm.data[row][col], list):
+            self.gm.data[row][col] = [hive]
+
+        if hive.currentNectar < COUT_PONTE:
+            return self.aiMoveBees(hive)
+
+        hive.reduceNectar(COUT_PONTE)
+        bee = hive.spawnBee(beeType)
+        bee.owner = hive.owner
+        bee.name = randomName()
+        self.gm.data[row][col].append(bee)
+
+        self.view.clearCanva()
+        self.view.render()
+        self.aiMoveBees(hive)
+
+
+    def aiMoveBees(self, hive):
+
+        for bee in reversed(hive.beeList):
+            if bee.isStun:
+                continue
+
+            bee_r, bee_c = self.gm.getItemCoord(bee)
+            if bee_r is None or bee_c is None:
+                bee_r, bee_c = self.gm.getItemCoord(hive)
+
+            r , c=hive.owner.aiMoveBee(bee, bee_r, bee_c)
+            areaOwner = self.gm.getAreaOwner(self.hives, r, c)
+            if areaOwner == bee.owner or areaOwner is None:
+                self.gm.moveObject(bee, r, c)
+                self.gm.cleanGrid()
+
+                self.view.clearCanva()
+                self.view.render()
+            else:
+                raise ValueError("It's not your zone")
+
+
 
     def end_round(self):
         self.gm.checkStunBee()

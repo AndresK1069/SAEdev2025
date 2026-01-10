@@ -3,7 +3,7 @@ from tkinter import simpledialog
 from core.Component.Hive import Hive
 from core.GridManager import GridManager
 from gui.Window import Window
-
+from data.constante import BEES_TYPE
 
 
 class GameView:
@@ -70,7 +70,7 @@ class GameView:
         return selected_choice["value"]
 
     def choose_bee(self,hive):
-        bee_options = ["bourdon", "eclaireuse", "ouvriere"]
+        bee_options = BEES_TYPE
 
         popup = tk.Toplevel()
         popup.title(f"{hive.owner.playerName} Spawn Bee")

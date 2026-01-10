@@ -431,6 +431,19 @@ class GridManager():
 
         return winning_hive_row, winning_hive_col
 
+    def getItemCoord(self,x):
+        rows = len(self.data)
+        cols = len(self.data[0])
+        for r in range(rows):
+            for c in range(cols):
+                if isinstance(self.data[r][c], list):
+                    for item in self.data[r][c]:
+                        if id(item) == id(x):
+                            return r, c
+
+                if id(self.data[r][c]) == id(x):
+                    return (r, c)
+
     def setSafeZone(self, hive_array:list) -> None:
         if len(hive_array) != 4:
             raise ValueError("Expected at least 4 hives")
