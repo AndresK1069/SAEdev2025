@@ -41,9 +41,8 @@ class GameController:
             if choice == 1:
                 self.aiSpawnBee(hive,hive.owner.getBee())
             if choice == 2:
-                #add move
+                self.aiMoveBees(hive)
                 pass
-
             if choice == 3:
                 pass
 
@@ -147,27 +146,27 @@ class GameController:
         self.view.render()
         self.aiMoveBees(hive)
 
-
     def aiMoveBees(self, hive):
-
         for bee in reversed(hive.beeList):
             if bee.isStun:
                 continue
 
-            bee_r, bee_c = self.gm.getItemCoord(bee)
-            if bee_r is None or bee_c is None:
-                bee_r, bee_c = self.gm.getItemCoord(hive)
-
-            r , c=hive.owner.aiMoveBee(bee, bee_r, bee_c)
-            areaOwner = self.gm.getAreaOwner(self.hives, r, c)
-            if areaOwner == bee.owner or areaOwner is None:
-                self.gm.moveObject(bee, r, c)
-                self.gm.cleanGrid()
-
-                self.view.clearCanva()
-                self.view.render()
-            else:
-                raise ValueError("It's not your zone")
+            while True:
+                try:
+                    bee_r, bee_c = self.gm.getItemCoord(bee)
+                    if bee_r is None or bee_c is None:
+                        bee_r, bee_c = self.gm.getItemCoord(hive)
+                    r, c = hive.owner.aiMoveBee(bee, bee_r, bee_c)
+                    areaOwner = self.gm.getAreaOwner(self.hives, r, c)
+                    if areaOwner != bee.owner and areaOwner is not None:
+                        raise ValueError("It's not your zone")
+                    self.gm.moveObject(bee, r, c)
+                    self.gm.cleanGrid()
+                    self.view.clearCanva()
+                    self.view.render()
+                    break
+                except Exception as e:
+                    print(f"Move failed for bee {bee}: {e}. Retrying...")
 
 
 
