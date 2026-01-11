@@ -15,7 +15,7 @@ class Game:
         self.G = Grass("G")
         self.PLAYERS = get_players_from_menu()
 
-        self.H1 = Hive("h1", self.PLAYERS[0], [], MAX_NECTAR, 26, [])
+        self.H1 = Hive("h1", self.PLAYERS[0], [], MAX_NECTAR, NECTAR_INITIAL, [])
         self.H2 = Hive("h2", self.PLAYERS[1], [], MAX_NECTAR, NECTAR_INITIAL, [])
         self.H3 = Hive("h3", self.PLAYERS[2], [], MAX_NECTAR, NECTAR_INITIAL, [])
         self.H4 = Hive("h4", self.PLAYERS[3], [], MAX_NECTAR, NECTAR_INITIAL, [])

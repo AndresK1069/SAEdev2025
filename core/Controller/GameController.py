@@ -85,14 +85,12 @@ class GameController:
 
     def move_bees(self, hive):
         if len(hive.beeList) == 0:
-            #fixme
+
             noBeeSpawn = messagebox.askyesno(
                 f"{hive.owner.playerName} Action",
                 "Vous n'avez pas d'abeille actuellement. Voulez-vous en pondre une ?"
             )
 
-
-            # Convert True/False to 1/0 if you need
             noBeeSpawn_int = 1 if noBeeSpawn else 0
             if noBeeSpawn == 1:
                 return self.spawn_bee(hive)
@@ -104,7 +102,7 @@ class GameController:
                 continue
 
 
-            #fixme
+
             move = messagebox.askyesno(
                 f"{hive.owner.playerName} Action",
                 f"Bouger {bee.name}?"

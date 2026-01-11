@@ -6,7 +6,7 @@ class Eclaireuse(Bee):
     def __init__(self):
         beeHealth = 3
         maxNectar = 5
-        beeAgility = 99
+        beeAgility = 1
         beeStrength = 1
         displayObject = "E"
         simpleMovement = False
