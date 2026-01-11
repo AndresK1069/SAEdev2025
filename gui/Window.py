@@ -175,7 +175,7 @@ class Window:
     def getInfo(self,cell):
         from core.Component.Bee import Bee
         if isinstance(cell, Flower):
-            f =f"Nectar actuelle : {cell.flowerNectar}"
+            f =f"Fleur"
             return f
         if isinstance(cell , Hive):
             f=f"Propriétaire : {cell.owner.playerName}"

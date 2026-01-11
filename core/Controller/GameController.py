@@ -184,6 +184,6 @@ class GameController:
     def check_end(self):
         is_winner, r, c = self.gm.isWinner(self.hive_coords)
         if is_winner:
-            self.view.show_winner(self.gm.data[r][c].owner.playerName)
-            return True
+            print(f"{self.gm.data[r][c].owner.playerName} is The Winner!")
+            exit()
         return False

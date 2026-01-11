@@ -3,8 +3,6 @@ from core.Component.Hive import Hive
 from core.Component.Wall import Wall
 from core.Controller.GameController import GameController
 from core.GridManager import GridManager
-from core.Player import Player
-from core.AiPlayer import AiPlayer
 from core.view.GameView import GameView
 from data.constante import MAX_NECTAR, NECTAR_INITIAL, NFLEURS, WINDOW_TITLE, NCASES, SIZE, TIME_OUT
 from gui.Window import Window
@@ -17,7 +15,7 @@ class Game:
         self.G = Grass("G")
         self.PLAYERS = get_players_from_menu()
 
-        self.H1 = Hive("h1", self.PLAYERS[0], [], MAX_NECTAR, NECTAR_INITIAL, [])
+        self.H1 = Hive("h1", self.PLAYERS[0], [], MAX_NECTAR, 26, [])
         self.H2 = Hive("h2", self.PLAYERS[1], [], MAX_NECTAR, NECTAR_INITIAL, [])
         self.H3 = Hive("h3", self.PLAYERS[2], [], MAX_NECTAR, NECTAR_INITIAL, [])
         self.H4 = Hive("h4", self.PLAYERS[3], [], MAX_NECTAR, NECTAR_INITIAL, [])

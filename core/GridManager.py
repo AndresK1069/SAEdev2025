@@ -82,9 +82,6 @@ class GridManager():
             self.data[flower_row][mirrored_col] = Flower("f",evenSplit(NFLEURS,MAX_NECTAR))
             self.data[mirrored_row][mirrored_col] = Flower("f",evenSplit(NFLEURS,MAX_NECTAR))
 
-            #print(middle_line-flower_row)
-
-
         return self.data
 
 
@@ -397,7 +394,7 @@ class GridManager():
             else:
                 r, c = x
                 cell = self.data[r][c]
-                if hasattr(cell, "currentNectar") and cell.currentNectar >= MAX_NECTAR:
+                if hasattr(cell, "currentNectar") and cell.currentNectar >= MAX_NECTAR or cell.currentNectar >= MAX_NECTAR//2:
                     won = True
                     winning_hive_row = r
                     winning_hive_col = c
