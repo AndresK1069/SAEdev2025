@@ -6,7 +6,7 @@ class Bourdon(Bee):
     def __init__(self):
         beeHealth = 5
         maxNectar = 3
-        beeAgility = 1
+        beeAgility = 2
         beeStrength = 5
         displayObject = "B"
         simpleMovement = True

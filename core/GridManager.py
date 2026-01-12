@@ -124,23 +124,44 @@ class GridManager():
         rows = len(self.data)
         cols = len(self.data[0])
 
-        # Check bounds
-        if nRow < 0 or nRow >= rows or nCol < 0 or nCol >= cols:
+        # bounds
+        if not (0 <= nRow < rows and 0 <= nCol < cols):
             raise Exception("Target cell out of bounds")
 
-        # Check if target is empty
+        # destination must be empty
         if self.data[nRow][nCol] is not None:
             raise Exception("Target cell is not empty")
 
-        row_diff = nRow - r
-        col_diff = nCol - c
+        dr = nRow - r
+        dc = nCol - c
+
+        if dr == 0 and dc == 0:
+            raise Exception("No movement")
+
+        if abs(dr) > bee.beeAgility or abs(dc) > bee.beeAgility:
+            raise Exception("Move exceeds agility")
+
 
         if bee.simpleMovement:
-            # Only horizontal or vertical moves
-            if row_diff != 0 and col_diff != 0:
-                raise Exception("Diagonal movement is not allowed")
-        if abs(row_diff) > bee.beeAgility or abs(col_diff) > bee.beeAgility:
-            raise Exception("Move exceeds agility")
+            if dr != 0 and dc != 0:
+                raise Exception("Diagonal movement not allowed")
+        else:
+            if not (dr == 0 or dc == 0 or abs(dr) == abs(dc)):
+                raise Exception("Invalid queen-like movement")
+
+
+        step_r = 0 if dr == 0 else (1 if dr > 0 else -1)
+        step_c = 0 if dc == 0 else (1 if dc > 0 else -1)
+
+        curr_r = r + step_r
+        curr_c = c + step_c
+
+        while curr_r != nRow or curr_c != nCol:
+            if self.data[curr_r][curr_c] is not None:
+                raise Exception("Path blocked")
+
+            curr_r += step_r
+            curr_c += step_c
 
         return True
 
@@ -172,6 +193,7 @@ class GridManager():
                     self.data[nRow][nCol] = bee
                     self.data[r][c] = None
                     return self.data
+
 
         raise Exception("Bee not found in matrix")
 
