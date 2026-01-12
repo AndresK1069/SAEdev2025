@@ -3,6 +3,25 @@ from tkinter import ttk
 from data.constante import colors
 
 def get_players_from_menu():
+    """
+        Ouvre une interface graphique pour configurer les joueurs du jeu.
+
+        La fonction crée une fenêtre Tkinter permettant à l'utilisateur de définir
+        jusqu'à 4 joueurs. Pour chaque joueur, il est possible de choisir :
+        - Le nom du joueur.
+        - La couleur primaire.
+        - La couleur secondaire.
+        - Le type de joueur : humain ou IA.
+
+        Lorsqu'on clique sur "Create Players", les informations sont utilisées
+        pour créer les instances de `Player` ou `AiPlayer`, puis la fenêtre
+        se ferme et la liste des joueurs est retournée.
+
+        Retours
+        -------
+        list
+            Liste des objets joueurs créés (`Player` ou `AiPlayer`).
+        """
     players = []
 
     def on_create():

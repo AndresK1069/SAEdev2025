@@ -49,11 +49,45 @@ class Window:
         self.canvas.pack()
 
     def drawCell(self):
+        """
+            Dessine la grille sur le canevas.
+
+            Cette méthode trace les lignes verticales et horizontales pour
+            représenter les cellules de la grille de jeu sur le canevas Tkinter.
+            La taille de chaque cellule est déterminée par `cellSize`, et le nombre
+            total de cases est défini par `NCASES`.
+
+            Retours
+            -------
+            None
+                La méthode agit directement sur le canevas et ne retourne rien.
+        """
         for i in range(0, self.cellSize*NCASES, self.cellSize):
             self.canvas.create_line(i, 0, i, self.size, fill="black")
             self.canvas.create_line(0, i, self.size, i, fill="black")
 
     def getSprite(self, key):
+        """
+            Récupère une copie d'un sprite depuis le cache.
+
+            Cette méthode retourne une copie indépendante (`deepcopy`) du sprite
+            correspondant à la clé fournie. Elle utilise le cache interne
+            `sprite_cache` pour éviter de recharger ou recréer les images à chaque fois.
+
+            Paramètres
+            ----------
+            key : object ou type
+                La clé pour identifier le sprite. Cela peut être :
+                - un objet dont on veut le sprite,
+                - le type de l'objet,
+                - ou une clé spécifique (ex. "Stun").
+
+            Retours
+            -------
+            Sprite | None
+                Une copie indépendante du sprite associé à la clé, ou `None` si le sprite
+                n'existe pas dans le cache.
+        """
         if key in self.sprite_cache:
             return copy.deepcopy(self.sprite_cache[key])
 
@@ -63,6 +97,27 @@ class Window:
         return copy.deepcopy(original_sprite)
 
     def renderMatrix(self, matrix: GridManager) -> None:
+        """
+            Affiche graphiquement la matrice de jeu sur le canevas.
+
+            Cette méthode parcourt chaque cellule de la matrice `matrix` et dessine
+            les objets qu'elle contient sur le canevas Tkinter.
+            - Les cellules peuvent contenir un seul objet ou une liste d'objets.
+            - Les abeilles et ruches sont colorisées selon les couleurs de leur propriétaire.
+            - Les abeilles étourdies (`stun`) affichent un sprite spécifique.
+            - Les objets multiples dans une même cellule sont décalés légèrement pour éviter
+              le chevauchement complet.
+
+            Paramètres
+            ----------
+            matrix : GridManager
+                La matrice représentant la grille du jeu contenant les objets à afficher.
+
+            Retours
+            -------
+            None
+                La méthode agit directement sur le canevas et ne retourne rien.
+        """
         from core.Component.Bee import Bee
 
         if not hasattr(self.canvas, "images"):
@@ -123,6 +178,35 @@ class Window:
                     offset += 5
 
     def track_mouse(self, matrix: GridManager, lastLoc: list, isUp: bool):
+        """
+          Suit le curseur de la souris et affiche un tooltip pour la cellule survolée.
+
+          Cette méthode vérifie périodiquement la position de la souris sur le canevas,
+          calcule la cellule correspondante dans la matrice `matrix` et affiche un tooltip
+          contenant les informations de la cellule si elle est survolée.
+          - Les cellules vides ou les murs (`Wall`) ne déclenchent pas de tooltip.
+          - Le tooltip disparaît lorsque la souris quitte la cellule ou survole une cellule
+            vide ou un mur.
+
+          La méthode s'auto-appelle toutes les 50 ms via `self.window.after` pour un suivi
+          continu de la souris.
+
+          Paramètres
+          ----------
+          matrix : GridManager
+              La matrice représentant la grille du jeu.
+          lastLoc : list
+              Liste contenant les coordonnées de la dernière cellule survolée.
+              Permet de gérer l'affichage du tooltip pour éviter les répétitions.
+          isUp : bool
+              Indique si le tooltip est actuellement affiché ou non.
+
+          Retours
+          -------
+          None
+              La méthode agit directement sur l'interface graphique et le tooltip,
+              elle ne retourne rien.
+        """
         x = self.window.winfo_pointerx() - self.window.winfo_rootx()
         y = self.window.winfo_pointery() - self.window.winfo_rooty()
         if x < self.size and y < self.size:
@@ -154,10 +238,34 @@ class Window:
         self.window.after(50, self.track_mouse, matrix, lastLoc, isUp)
 
     def canvaClear(self):
+        """
+            Efface entièrement le canevas graphique.
+
+            La méthode supprime tous les objets dessinés sur le canevas et
+            vide la liste interne des images associées.
+
+            Retours
+            -------
+            None
+                La méthode ne retourne rien ; elle agit directement sur le canevas.
+        """
         self.canvas.delete("all")
         self.canvas.images.clear()
 
     def waitForClick(self):
+        """
+            Attend qu'un clic de souris se produise sur le canevas et retourne la position.
+
+            La méthode bloque l'exécution jusqu'à ce que l'utilisateur clique
+            sur le canevas. Elle calcule la cellule cliquée en fonction de la
+            taille des cellules (`cellSize`) et retourne ses coordonnées
+            (ligne, colonne).
+
+            Retours
+            -------
+            tuple[int, int]
+                Coordonnées (row, col) de la cellule cliquée sur le canevas.
+        """
         self._click_var = tk.IntVar()
         self._click_pos = None
 
@@ -172,7 +280,33 @@ class Window:
         self.canvas.unbind("<Button-1>")
 
         return self._click_pos
+
     def getInfo(self,cell):
+        """
+            Retourne une chaîne descriptive contenant les informations sur une cellule.
+
+            Selon le type de cellule, la méthode fournit différentes informations :
+            - **Flower** : indique simplement "Fleur".
+            - **Hive** : affiche le nom du propriétaire de la ruche.
+            - **Bee** : si l'abeille est étourdie (stun), affiche le propriétaire et le nombre de tours restants.
+            - **Eclaireuse / Ouvrière / Bourdon** : affiche un résumé détaillé de l'abeille, incluant :
+                - Type d'abeille
+                - Nom de l'abeille
+                - Propriétaire
+                - Vie actuelle et maximale
+                - Force
+                - Nectar actuel et maximal
+
+            Paramètres
+            ----------
+            cell : object
+                La cellule à inspecter. Peut être une `Flower`, `Hive` ou une abeille (`Bee`, `Eclaireuse`, `Ouvriere`, `Bourdon`).
+
+            Retours
+            -------
+            str
+                Une chaîne décrivant les informations pertinentes de la cellule.
+        """
         from core.Component.Bee import Bee
         if isinstance(cell, Flower):
             f =f"Fleur"
@@ -197,4 +331,16 @@ class Window:
             return f
 
     def run(self):
+        """
+            Lance la boucle principale de l'interface graphique.
+
+            Cette méthode démarre la boucle `mainloop` de Tkinter pour
+            maintenir la fenêtre ouverte et permettre l'interaction
+            avec l'utilisateur.
+
+            Retours
+            -------
+            None
+                La méthode ne retourne rien ; elle exécute la boucle graphique.
+        """
         self.window.mainloop()

@@ -2,14 +2,67 @@ from core.Component.Bees.BeeTypes import BEE_TYPES
 
 
 def evenSplit(nfleur: int , maxNectar :int) -> int:
+    """
+        Calcule une répartition équitable du nectar entre les fleurs.
+
+        La méthode divise le nectar maximal disponible (`maxNectar`) par
+        deux fois le nombre de fleurs (`nfleur`) pour obtenir une quantité
+        équitable à attribuer à chaque fleur.
+
+        Paramètres
+        ----------
+        nfleur : int
+            Nombre total de fleurs.
+        maxNectar : int
+            Quantité maximale de nectar disponible.
+
+        Retours
+        -------
+        int
+            Quantité de nectar à attribuer à chaque fleur.
+        """
     return maxNectar//(nfleur*2)
 
 def getBeeStats(string:str):
+    """
+        Retourne une instance d'abeille correspondant au type donné.
+
+        La méthode prend une chaîne représentant le type d'abeille,
+        la convertit en minuscules, récupère la classe correspondante
+        dans le dictionnaire `BEE_TYPES` et retourne une instance de cette classe.
+
+        Paramètres
+        ----------
+        string : str
+            Nom du type d'abeille à récupérer (par exemple "worker", "queen", etc.).
+
+        Retours
+        -------
+        Bee
+            Une instance de l'abeille correspondant au type spécifié.
+
+        Exceptions
+        ----------
+        KeyError
+            Levée si le type d'abeille fourni n'existe pas dans `BEE_TYPES`.
+    """
     string = string.lower()
     bee_class = BEE_TYPES[string]
     return bee_class()
 
 def randomName():
+    """
+        Génère un nom complet aléatoire.
+
+        La méthode sélectionne aléatoirement un prénom dans la liste `first_names`
+        et un nom de famille dans la liste `last_names`, puis les combine pour
+        former un nom complet.
+
+        Retours
+        -------
+        str
+            Nom complet aléatoire sous la forme "Prénom Nom".
+    """
     import random
     first_names = (
         "John", "Andy", "Joe", "Michael", "David", "Chris", "James", "Robert", "William", "Daniel",
